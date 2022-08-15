@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h4 class="card-header-tabs">
+        <center>HELLO USER! THIS IS YOUR TODAY'S SCHEDULE</center>
+    </h4>
+    <br>
+    <br>
+    <h5 class="card-header">
+        <center>It's time for:</center>
+    </h5>
+    <div class="input-group mb-3">
+        <div class="input-group-text" style="background-color: #B4754C">
+            <input class="form-check-input mt-0" style="background-color: #E4BFA6" type="checkbox" value=""
+                   aria-label="Checkbox for following text input">
+        </div>
+        <input type="text" style="background-color: #E4BFA6" class="form-control" aria-label="Text input with checkbox"
+               value="<The current task>">
+    </div>
+    <br>
+    <h5>
+        <center>Your events for today:</center>
+    </h5>
+    <input type="text" style="background-color: #E4BFA6" class="form-control" aria-label="Text input"
+           value="Pomalować strony na fioletowo">
+    <input type="text" style="background-color: #E4BFA6" class="form-control" aria-label="Text input"
+           value="Programowanie w kawiarni">
+    <input type="text" style="background-color: #E4BFA6" class="form-control" aria-label="Text input"
+           value="Głaskanie psa na ulicy">
+    <br>
+    <h5>
+        <center>Your journal</center>
+    </h5>
+    <div class="form-floating">
+        <textarea style="background-color:#E4BFA6 !important" class="form-control" placeholder="Leave a comment here"
+                  id="floatingTextarea2"
+                  style="height: 100px"></textarea>
+        <label for="floatingTextarea2">Your journal</label>
+    </div>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Time</th>
+            <th scope="col">Schedule</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">10:00-11:00</th>
+            <td>Event</td>
+        </tr>
+        <tr>
+            <th scope="row">11:00-12:00</th>
+            <td>Lunch</td>
+        </tr>
+        <tr>
+            <th scope="row">12:00-13:00</th>
+            <td>Meeting</td>
+        </tr>
+        <tr>
+            <th scope="row">13:00-14:00</th>
+            <td>Coffee</td>
+        </tr>
+        <tr>
+            <th scope="row">15:00-16:00</th>
+            <td>Paint everything purple</td>
+        </tr>
+        <tr>
+            <th scope="row">16:00-17:00</th>
+            <td>Event</td>
+        </tr>
+        <tr>
+            <th scope="row">17:00-18:00</th>
+            <td>Dinner</td>
+        </tr>
+        <tr>
+            <th scope="row">19:00-20:00</th>
+            <td>Evening routine</td>
+        </tr>
+        </tbody>
+    </table>
+
+{% endblock %}
