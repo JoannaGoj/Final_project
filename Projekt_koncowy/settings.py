@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'planner'
+    'planner',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -118,4 +119,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/pictures/'
+
 MEDIA_ROOT = BASE_DIR
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
