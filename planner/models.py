@@ -1,8 +1,7 @@
 from datetime import date
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.timezone import now
-
+from django.utils.timezone import now, timedelta
 
 # Create your models here.
 
@@ -19,30 +18,40 @@ class Schedule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     description = models.TextField(max_length=250, blank=True)
-    date = models.DateField(auto_now=True)
     cancelled = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    start_time = models.DateTimeField('%H:%M')
-    end_time = models.DateTimeField('%H:%M')
+    updated_at = models.DateTimeField('%d.%m.%Y', null=True)
+    start_time = models.DateTimeField("%d.%m.%Y,%H:%M", default=now)
+    end_time = models.DateTimeField("%d.%m.%Y,%H:%M", default=now)
     tags = models.ManyToManyField('Tags')
 
     class Meta:
         abstract = True
 
+    def is_approaching_or_past(self):
+        pass
+
+
+    def how_long_it_takes(self):
+        timeblock = self.end_time - self.start_time
+        return timeblock
+
+    def __str__(self):
+        formatted_start_time = self.start_time.strftime("%H:%M")
+        formatted_end_time = self.end_time.strftime("%H:%M")
+        formatted_date = self.start_time.strftime('%d.%m.%Y')
+        return f"{formatted_date}  |  {formatted_start_time} - {formatted_end_time}"
+
 
 class Event(Schedule):
 
     def __str__(self):
-        return self.name
+        event_info_to_display = [self.name, self.description, self.date, self.start_time, self.end_time, self.tags]
+        return event_info_to_display
 
 
 class Task(Schedule):
-    urgent = models.IntegerField(choices=URGENT)
-    completed = models.BooleanField()
-
-    def __str__(self):
-        return self.name
+    urgent = models.IntegerField(choices=URGENT, default=2)
+    completed = models.BooleanField(default=False)
 
 
 class Tags(models.Model):
