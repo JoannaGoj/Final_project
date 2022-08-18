@@ -29,17 +29,16 @@ class Schedule(models.Model):
 
     def is_approaching_or_past(self):
         is_past_or_approaching = ""
-        comparing_start_date_to_today = (date.today() - self.start_time.date()).days
-        if comparing_start_date_to_today < 0:
-            is_past_or_approaching += 'Past'
-            return is_past_or_approaching, comparing_start_date_to_today
-        elif 0 <= comparing_start_date_to_today < 3:
-            is_past_or_approaching += 'Soon approaching'
-            lista = [is_past_or_approaching, comparing_start_date_to_today]
-            return lista
+        how_many_days_to_task = (date.today() - self.start_time.date()).days
+        if how_many_days_to_task < 0:
+            is_past_or_approaching += 'Already past'
+            return is_past_or_approaching, how_many_days_to_task
+        elif 0 <= how_many_days_to_task < 3:
+            is_past_or_approaching += 'Soon approaching!'
+            return is_past_or_approaching, how_many_days_to_task
         else:
             is_past_or_approaching += 'In future'
-            return is_past_or_approaching, comparing_start_date_to_today
+            return is_past_or_approaching, how_many_days_to_task
 
     def __str__(self):
         formatted_start_time = self.start_time.strftime("%H:%M")

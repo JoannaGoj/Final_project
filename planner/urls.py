@@ -19,7 +19,6 @@ from django.urls import path
 from planner import views
 
 urlpatterns = [
-    path('example/', views.Example.as_view(), name='example'),
     path('add_task/', views.AddTaskView.as_view(), name='add_task'),
     path('all_tasks/', views.ShowAllTasks.as_view(), name='show_all_tasks')
 ]

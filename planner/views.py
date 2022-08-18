@@ -12,7 +12,6 @@ from django.urls import reverse_lazy
 class Example(View):
     def get(self, request):
         tasks = Task.objects.all()
-
         return render(request, 'example_user_page.html', {'tasks':tasks})
 
 
