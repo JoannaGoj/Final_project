@@ -11,7 +11,9 @@ from django.urls import reverse_lazy
 
 class Example(View):
     def get(self, request):
-        return render(request, 'example_user_page.html')
+        tasks = Task.objects.all()
+
+        return render(request, 'example_user_page.html', {'tasks':tasks})
 
 
 class ShowUserPage(LoginRequiredMixin, View):
@@ -30,3 +32,8 @@ class ShowAllTasks(ListView):
     model = Task
     template_name = 'show_all_tasks.html'
     fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        data.update({'message': 'message'})
+        return data

@@ -30,6 +30,9 @@
     <br>
     <h5 class="text-center">
         Your journal
+    {% for task in tasks %}
+        <p>{{ task.is_approaching_or_past.0 }}</p>
+    {% endfor %}
     </h5>
     <div class="form-floating">
         <textarea style="background-color:#E4BFA6 !important" class="form-control" placeholder="Leave a comment here"

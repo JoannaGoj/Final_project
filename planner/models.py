@@ -28,18 +28,30 @@ class Schedule(models.Model):
         abstract = True
 
     def is_approaching_or_past(self):
-        pass
-
-
-    def how_long_it_takes(self):
-        timeblock = self.end_time - self.start_time
-        return timeblock
+        is_past_or_approaching = ""
+        comparing_start_date_to_today = (date.today() - self.start_time.date()).days
+        if comparing_start_date_to_today < 0:
+            is_past_or_approaching += 'Past'
+            return is_past_or_approaching, comparing_start_date_to_today
+        elif 0 <= comparing_start_date_to_today < 3:
+            is_past_or_approaching += 'Soon approaching'
+            lista = [is_past_or_approaching, comparing_start_date_to_today]
+            return lista
+        else:
+            is_past_or_approaching += 'In future'
+            return is_past_or_approaching, comparing_start_date_to_today
 
     def __str__(self):
         formatted_start_time = self.start_time.strftime("%H:%M")
         formatted_end_time = self.end_time.strftime("%H:%M")
-        formatted_date = self.start_time.strftime('%d.%m.%Y')
-        return f"{formatted_date}  |  {formatted_start_time} - {formatted_end_time}"
+        formatted_start_date = self.start_time.strftime('%d.%m.%Y')
+        formatted_end_date = self.end_time.strftime('%d.%m.%Y')
+        if formatted_end_date == formatted_start_date:
+            return f"{formatted_start_date}  |  {formatted_start_time} - {formatted_end_time}"
+        else:
+            days_task_lasts = self.end_time - self.start_time
+            formatted_days_task_lasts = days_task_lasts.days
+            return f"{formatted_start_date} - {formatted_end_date} |  {formatted_start_time} - {formatted_end_time}(+{formatted_days_task_lasts})"
 
 
 class Event(Schedule):
