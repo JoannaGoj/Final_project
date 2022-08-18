@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h4 class="card-header-tabs">
-        <center>HELLO USER! THIS IS YOUR TODAY'S SCHEDULE</center>
+    <h4 class="card-header-tabs text-center>
+        HELLO USER! THIS IS YOUR TODAY'S SCHEDULE
     </h4>
     <br>
     <br>
-    <h5 class="card-header">
-        <center>It's time for:</center>
-    </h5>
+    <h5 class="card-header text-center>
+        It's time for:
+    </h4>
     <div class="input-group mb-3">
         <div class="input-group-text" style="background-color: #B4754C">
             <input class="form-check-input mt-0" style="background-color: #E4BFA6" type="checkbox" value=""
@@ -18,9 +18,9 @@
                value="<The current task>">
     </div>
     <br>
-    <h5>
-        <center>Your events for today:</center>
-    </h5>
+    <h4 class="text-center">
+        Your events for today:
+    </h4>
     <input type="text" style="background-color: #E4BFA6" class="form-control" aria-label="Text input"
            value="Pomalować strony na fioletowo">
     <input type="text" style="background-color: #E4BFA6" class="form-control" aria-label="Text input"
@@ -28,8 +28,11 @@
     <input type="text" style="background-color: #E4BFA6" class="form-control" aria-label="Text input"
            value="Głaskanie psa na ulicy">
     <br>
-    <h5>
-        <center>Your journal</center>
+    <h5 class="text-center">
+        Your journal
+    {% for task in tasks %}
+        <p>{{ task.is_approaching_or_past.0 }}</p>
+    {% endfor %}
     </h5>
     <div class="form-floating">
         <textarea style="background-color:#E4BFA6 !important" class="form-control" placeholder="Leave a comment here"

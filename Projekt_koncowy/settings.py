@@ -19,6 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'django-insecure-p#)z3wvwgnax)sre23*r@1=#f4_ay1et0am!6$tkq8+4z=!s1h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
-    'planner'
+    'planner',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -116,4 +119,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/pictures/'
+
 MEDIA_ROOT = BASE_DIR
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
