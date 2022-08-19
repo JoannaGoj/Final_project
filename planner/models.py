@@ -54,10 +54,7 @@ class Schedule(models.Model):
 
 
 class Event(Schedule):
-
-    def __str__(self):
-        event_info_to_display = [self.name, self.description, self.date, self.start_time, self.end_time, self.tags]
-        return event_info_to_display
+    pass
 
 
 class Task(Schedule):
