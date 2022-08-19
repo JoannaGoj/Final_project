@@ -1,25 +1,10 @@
 <ul class="list-group">
     {% for object in object_list %}
-        <li class="list-group-item border-0" style="background-color: transparent">
-        {% if object.is_past %}
-                {% endif %}
-        {% if object.urgent == 1 %}
-            <div class="card border-0" style="background-color:#a64dff ; width: 35rem;">
+        {% if model == 'tasks' %}
+        {% include 'show_all_tasks_urgency_condition.html' %}
         {% endif %}
-        {% if object.urgent == 2 %}
-            <div class="card border-0" style="background-color: #cc99ff; width: 35rem;">
+        {% if model == 'events' %}
+            {% include 'show_all_events_li.html' %}
         {% endif %}
-        {% if object.urgent == 3 %}
-            <div class="card border-0" style="background-color: #f2e6ff; width: 35rem;">
-        {% endif %}
-    <div class="card-body">
-        <h5 class="card-title">{{ object.name }} </h5>
-        <p class="card-text">{{ object.is_approaching_or_past.0  }}</p>
-        <h6 class="card-subtitle mb-2 text-muted">{{ object }}</h6>
-        <p class="card-text">{{ object.description }}</p>
-        <h6 class="card-subtitle mb-2 text-muted">cos wpisac</h6>
-        <a href="#" class="card-link">Edit task</a>
-    </div>
-    </div>
     {% endfor %}
 </ul>
