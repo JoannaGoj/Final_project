@@ -1,5 +1,4 @@
 from datetime import date
-
 from django.shortcuts import render
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
@@ -42,14 +41,14 @@ class AddJournalEntryView(CreateView):
 
 class ManageTags(View):
     def get(self, request):
-        tags = Tags.objects.all()
+        tags = Tags.objects.all().order_by('pk')
         events = Event.objects.all()
         form = TagsForm
         return render(request, 'manage_tags.html', {'tags': tags, 'events': events, 'form': form})
 
     def post(self, request):
         form = TagsForm(request.POST)
-        tags = Tags.objects.all()
+        tags = Tags.objects.all().order_by('pk')
         events = Event.objects.all()
         if form.is_valid():
             form.save()
@@ -69,15 +68,17 @@ class UpdateTag(UpdateView):
         return data
 
 
-class DeleteTagView(DeleteView):
-    model = Tags
-    template_name = 'manage_tags.html'
-
-    def get_context_data(self, **kwargs):
+class DeleteTagView(View):
+    def post(self, request):
         all_tags = Tags.objects.all()
-        data = super().get_context_data(**kwargs)
-        data.update({'tags': all_tags})
-        return data
+        return render(request, 'manage_tags.html', {'tags': all_tags, 'message':"You sure?"})
+
+    def post(self,request,pk):
+        tag_to_delete = Tags.objects.get(pk=pk)
+        tag_to_delete.delete()
+        return render(request, 'manage_tags.html')
+
+
 
 
 class ShowAllTasks(ListView):

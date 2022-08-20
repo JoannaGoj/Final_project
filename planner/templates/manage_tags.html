@@ -8,7 +8,7 @@
         <input type="submit" style="background-color: lightpink" value="Submit">
     </form>
 
-
+<form method="post"> {% csrf_token %}
     <ul class="list-group">
 
         {% for tag in tags %}
@@ -16,11 +16,14 @@
                 <div class="card-body" style="background-color: {{ tag.color }}">
                     <h5 class="card-title">{{ tag.name }}</h5>
                     <p class="card-text" href="#"> tutaj eventy polaczne z tagami</p>
-                    <a href="{% url 'update_tag' tag.id %}" class="btn btn-primary">Edit tag</a>
-                    <input type="submit" href="{% url 'delete_tag' tag.id %}" class="btn btn-secondary">Delete tag</input>
+                    <a href="{% url 'update_tag' tag.pk %}" class="btn btn-primary">Edit tag</a>
+                    < href="{% url 'delete_tag' tag.pk %}" value="Delete tag" name="delete_tag" class="btn btn-primary">
+                    {% if message == 'You sure?' %}
+                    <input type="">
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
     </ul>
-
+</form>
 {% endblock %}
