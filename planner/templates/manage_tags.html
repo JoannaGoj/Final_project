@@ -7,9 +7,7 @@
         <br>
         <input type="submit" style="background-color: lightpink" value="Submit">
     </form>
-
-<form method="post"> {% csrf_token %}
-    <ul class="list-group">
+    <br>
 
         {% for tag in tags %}
             <div class="card w-30">
@@ -19,13 +17,15 @@
                     <a href="{% url 'update_tag' tag.pk %}" class="btn btn-primary">Edit tag</a>
                     <a href="{% url 'delete_tag' tag.pk %}" class="btn btn-primary">delete_tag</a>
                     {% if message == 'delete' %}
-                        {% if tag.id == tag_pk %}
-                        <input type="submit" value="confirm delete">
+                        <form method="post"> {% csrf_token %}
+                            {% if tag.id == tag_pk %}
+                                <input type="submit" value="confirm delete" class="btn btn-danger">
+                                </form>
                             {% endif %}
                     {% endif %}
                 </div>
             </div>
+            <br>
         {% endfor %}
-    </ul>
-</form>
+
 {% endblock %}

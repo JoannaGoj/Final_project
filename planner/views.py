@@ -67,20 +67,17 @@ class UpdateTag(UpdateView):
         data.update({'tags': all_tags})
         return data
 
-
+# czemu pierwszy przycisk delete zjezdza na doł? Trzeba to poprawic
 class DeleteTagView(View):
-    def get(self, request,pk):
+    def get(self, request, pk):
         form = TagsForm
         all_tags = Tags.objects.all()
-        return render(request, 'manage_tags.html', {'tags': all_tags, 'message':"delete", 'tag_pk': pk, 'form': form})
+        return render(request, 'manage_tags.html', {'tags': all_tags, 'message': "delete", 'tag_pk': pk, 'form': form})
 
-    def post(self,request,pk):
+    def post(self, request, pk):
         tag_to_delete = Tags.objects.get(id=pk)
         tag_to_delete.delete()
         return redirect(reverse('manage_tags'))
-
-
-
 
 
 class ShowAllTasks(ListView):

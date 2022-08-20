@@ -4,7 +4,6 @@ from .models import Journal, Tags
 
 
 class JournalInputForm(forms.ModelForm):
-
     class Meta:
         model = Journal
         fields = ['name', 'text']
