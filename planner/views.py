@@ -43,15 +43,15 @@ class ManageTags(View):
     def get(self, request):
         tags = Tags.objects.all().order_by()
         form = TagsForm
-        return render(request, 'manage_tags.html', {'tags': tags, 'form': form})
+        events = Event.objects.all()
+        return render(request, 'manage_tags.html', {'tags': tags, 'form': form, 'events':events})
 
     def post(self, request):
         form = TagsForm(request.POST)
         tags = Tags.objects.all().order_by()
-        events = Event.objects.all()
         if form.is_valid():
             form.save()
-        return render(request, 'manage_tags.html', {'tags': tags, 'events': events, 'form': form})
+        return render(request, 'manage_tags.html', {'tags': tags, 'form': form})
 
 
 class UpdateTag(UpdateView):
