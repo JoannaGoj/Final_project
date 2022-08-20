@@ -1,5 +1,5 @@
 from datetime import date
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -69,14 +69,15 @@ class UpdateTag(UpdateView):
 
 
 class DeleteTagView(View):
-    def post(self, request):
+    def get(self, request,pk):
         all_tags = Tags.objects.all()
-        return render(request, 'manage_tags.html', {'tags': all_tags, 'message':"You sure?"})
+        return render(request, 'manage_tags.html', {'tags': all_tags, 'message':"delete"})
 
     def post(self,request,pk):
-        tag_to_delete = Tags.objects.get(pk=pk)
+        tag_to_delete = Tags.objects.get(id=pk)
         tag_to_delete.delete()
-        return render(request, 'manage_tags.html')
+        return redirect(reverse('manage_tags'))
+
 
 
 

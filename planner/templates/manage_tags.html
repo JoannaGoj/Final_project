@@ -17,9 +17,9 @@
                     <h5 class="card-title">{{ tag.name }}</h5>
                     <p class="card-text" href="#"> tutaj eventy polaczne z tagami</p>
                     <a href="{% url 'update_tag' tag.pk %}" class="btn btn-primary">Edit tag</a>
-                    < href="{% url 'delete_tag' tag.pk %}" value="Delete tag" name="delete_tag" class="btn btn-primary">
-                    {% if message == 'You sure?' %}
-                    <input type="">
+                    <a href="{% url 'delete_tag' tag.pk %}" class="btn btn-primary">delete_tag</a>
+                    {% if message == 'delete' %}
+                        <input type="submit" value="confirm delete">
                     {% endif %}
                 </div>
             </div>
