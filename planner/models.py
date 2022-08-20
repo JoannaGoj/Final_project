@@ -1,7 +1,9 @@
 from datetime import date
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.timezone import now, timedelta
+from django.utils.timezone import now
+from ckeditor.fields import RichTextField
+
 
 # Create your models here.
 
@@ -54,12 +56,17 @@ class Schedule(models.Model):
 
 
 class Event(Schedule):
-    pass
+
+    def class_id(self):
+        return "event"
 
 
 class Task(Schedule):
     urgent = models.IntegerField(choices=URGENT, default=2)
     completed = models.BooleanField(default=False)
+
+    def class_id(self):
+        return 'task'
 
 
 class Tags(models.Model):
@@ -68,6 +75,9 @@ class Tags(models.Model):
 
 class Journal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    text = models.TextField(max_length=250)
-    time = models.DateTimeField(default=now)
-    created = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=60, blank=True)
+    text = RichTextField(blank=True, null=True)
+    date_of_entry = models.DateTimeField(auto_now_add=True)
+
+    def class_id(self):
+        return "journal"
