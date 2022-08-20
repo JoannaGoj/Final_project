@@ -15,6 +15,7 @@ URGENT = (
 )
 
 
+# musze pousuwac start time i endtime ze schedule i przeniesc to do eventow tylko
 class Schedule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
@@ -53,11 +54,18 @@ class Schedule(models.Model):
             formatted_days_task_lasts = days_task_lasts.days
             return f"{formatted_start_date} - {formatted_end_date} |  {formatted_start_time} - {formatted_end_time}(+{formatted_days_task_lasts})"
 
+    def related_tags(self):
+        tags = Tags.objects.all()
+        return tags
 
+
+# usunac additional notes to jest tymczasowe
 class Event(Schedule):
+    additional_note = models.CharField(max_length=50)
 
-    def class_id(self):
-        return "event"
+
+def class_id(self):
+    return "event"
 
 
 class Task(Schedule):
@@ -71,6 +79,10 @@ class Task(Schedule):
 class Tags(models.Model):
     name = models.CharField(max_length=64)
     color = models.CharField(default="#E6C3CD", max_length=7, blank=True)
+
+    def related_schedules(self):
+        related_schedules = Schedule.objects.all()
+        return related_schedules
 
 
 class Journal(models.Model):

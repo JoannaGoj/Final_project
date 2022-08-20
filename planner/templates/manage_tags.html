@@ -13,13 +13,15 @@
             <div class="card w-30">
                 <div class="card-body" style="background-color: {{ tag.color }}">
                     <h5 class="card-title">{{ tag.name }}</h5>
-                    <p class="card-text" href="#"> tutaj eventy polaczne z tagami</p>
+                {% for event in tag.related_events %}
+                    <p class="card-text" href="#">{{ event }}</p>
+                    {% endfor %}
                     <a href="{% url 'update_tag' tag.pk %}" class="btn btn-primary">Edit tag</a>
-                    <a href="{% url 'delete_tag' tag.pk %}" class="btn btn-primary">delete_tag</a>
+                    <a href="{% url 'delete_tag' tag.pk %}" class="btn btn-primary">Delete tag</a>
                     {% if message == 'delete' %}
                         <form method="post"> {% csrf_token %}
                             {% if tag.id == tag_pk %}
-                                <input type="submit" value="confirm delete" class="btn btn-danger">
+                                <input type="submit" value="Confirm delete" class="btn btn-danger">
                                 </form>
                             {% endif %}
                     {% endif %}
