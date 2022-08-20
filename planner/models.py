@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.timezone import now
 from ckeditor.fields import RichTextField
 
-
 # Create your models here.
 
 
@@ -71,6 +70,7 @@ class Task(Schedule):
 
 class Tags(models.Model):
     name = models.CharField(max_length=64)
+    color = models.CharField(default="#E6C3CD", max_length=7, blank=True)
 
 
 class Journal(models.Model):

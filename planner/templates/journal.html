@@ -1,3 +1,6 @@
 {% load crispy_forms_filters %}
+{% csrf_token %}
+<form method="post">
 {{ journal_form.media }}
     {{ journal_form|crispy}}
+    </form>

@@ -23,5 +23,8 @@ urlpatterns = [
     path('all_tasks/', views.ShowAllTasks.as_view(), name='show_all_tasks'),
     path('all_events/', views.ShowAllEvents.as_view(), name='show_all_events'),
     path('add_event/', views.AddEventView.as_view(), name='add_event'),
-    path('daily_planner/', views.UserDailyPlanner.as_view(), name='daily_planner')
+    path('daily_planner/', views.UserDailyPlanner.as_view(), name='daily_planner'),
+    path('manage_tags/', views.ManageTags.as_view(), name='manage_tags'),
+    path('update_tag/<int:pk>/', views.UpdateTag.as_view(), name='update_tag'),
+    path('delete_tag/<int:pk>/', views.DeleteTagView.as_view(), name='delete_tag'),
 ]
