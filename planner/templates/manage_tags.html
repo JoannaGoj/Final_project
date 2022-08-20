@@ -19,7 +19,9 @@
                     <a href="{% url 'update_tag' tag.pk %}" class="btn btn-primary">Edit tag</a>
                     <a href="{% url 'delete_tag' tag.pk %}" class="btn btn-primary">delete_tag</a>
                     {% if message == 'delete' %}
+                        {% if tag.id == tag_pk %}
                         <input type="submit" value="confirm delete">
+                            {% endif %}
                     {% endif %}
                 </div>
             </div>
