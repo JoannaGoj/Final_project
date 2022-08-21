@@ -55,10 +55,7 @@ class Schedule(models.Model):
             return f"{formatted_start_date} - {formatted_end_date} |  {formatted_start_time} - {formatted_end_time}(+{formatted_days_task_lasts})"
 
 
-    def related_tags(self):
-        related_tags = Tags.objects.get(id=self.id)
-        related_tags
-        return related_tagg
+
 
 
 # usunac additional notes to jest tymczasowe
@@ -81,15 +78,6 @@ class Task(Schedule):
 class Tags(models.Model):
     name = models.CharField(max_length=64)
     color = models.CharField(default="#E6C3CD", max_length=7, blank=True)
-
-    def related_schedules(self):
-        related_schedules = Schedule.objects.get(id=self.id)
-        return related_schedules
-
-    def related_events(self):
-        related_events = Schedule.objects.get(id=self.id)
-        return related_events
-
 
 
 class Journal(models.Model):

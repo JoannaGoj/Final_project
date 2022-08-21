@@ -11,12 +11,10 @@
     {% if item.class_id == 'event' %}
         {% include 'event_card.html' %}
     {% endif %}
-
-{#    {% if item.class_id == 'journal' %}#}
-{#        {% include 'journal.html' %}#}
-{#    {% endif %}#}
+    {% if item.class_id == 'journal' %}
+        {% include 'journal.html' %}
+    {% endif %}
     <br>
 {% endfor %}
-    {{ journal_form.media }}
-{{ journal_form|crispy }}
+
 {% endblock %}

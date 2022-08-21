@@ -20,14 +20,14 @@ class Example(View):
 
 class AddTaskView(CreateView):
     model = Task
-    fields = ['name', 'description', 'user']
+    fields = ['name', 'description', 'user', 'start_time']
     template_name = 'form_template.html'
     success_url = reverse_lazy('example')
 
 
 class AddEventView(CreateView):
     model = Event
-    fields = ['name', 'description', 'user']
+    fields = ['name', 'description', 'user', 'start_time']
     template_name = 'form_template.html'
     success_url = reverse_lazy('example')
 

@@ -12,8 +12,9 @@
             <div class="card w-30">
                 <div class="card-body" style="background-color: {{ tag.color }}">
                     <h5 class="card-title">{{ tag.name }}</h5>
-
-                    <p class="card-text" href="#">{{ tag.related_events}}</p>
+{% for event in tag.related_events %}
+                    <p class="card-text" href="#">{{ event.name }}</p>
+    {% endfor %}
                     <a href="{% url 'update_tag' tag.pk %}" class="btn btn-primary">Edit tag</a>
                     <a href="{% url 'delete_tag' tag.pk %}" class="btn btn-primary">Delete tag</a>
                     {% if message == 'delete' %}
