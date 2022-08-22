@@ -17,10 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from planner import views as planne_views
+from planner import views as planner_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', planne_views.Example.as_view(), name='example'),
-    path('planner/', include('planner.urls'))
+    path('', planner_views.Example.as_view(), name='example'),
+    path('planner/', include('planner.urls')),
+    path('accounts/', include('accounts.urls'))
 ]

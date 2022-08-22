@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Task, Event, Journal, Tags
 from django.urls import reverse_lazy, reverse
 from itertools import chain
-from .forms import JournalInputForm, TagsForm
+from .forms import JournalInputForm, TagsForm, EventForm
 
 
 # Create your views here.
@@ -19,17 +19,22 @@ class Example(View):
 
 
 class AddTaskView(CreateView):
-    model = Task
-    fields = ['name', 'description', 'user', 'start_time']
-    template_name = 'form_template.html'
-    success_url = reverse_lazy('example')
+    pass
 
 
-class AddEventView(CreateView):
-    model = Event
-    fields = ['name', 'description', 'user', 'start_time']
-    template_name = 'form_template.html'
-    success_url = reverse_lazy('example')
+class AddEventView(View):
+    def get(self, request):
+        form = EventForm
+        return render(request, 'form_template.html', {'form': form})
+
+    def post(self, request):
+        form = EventForm(request.POST)
+        if form.is_valid():
+            event = form.save(commit=False)
+            event.user = request.user
+            event.save()
+        return render(request, reverse('show_all_events'))
+
 
 
 class AddJournalEntryView(CreateView):
@@ -105,9 +110,9 @@ class ShowAllEvents(ListView):
 class UserDailyPlanner(View):
     def get(self, request):
         today = date.today()
-        tasks = Task.objects.filter(start_time=today)  # user_Id dodać
+        # user_Id dodać
         events = Event.objects.filter(start_time=today)
         journal = Journal.objects.filter(date_of_entry=today)
-        all_items_on_the_page = list(chain(tasks, events, journal))
+        all_items_on_the_page = list(chain(events, journal)) # dodac taski
         journal_form = JournalInputForm
         return render(request, 'user_page.html', {'items': all_items_on_the_page, 'journal_form': journal_form})
