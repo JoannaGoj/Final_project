@@ -133,10 +133,8 @@ class ShowAllTasks(ListView):
 class UserDailyPlanner(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        today = timezone.now()
-        event = Event.objects.get(user_id=7)
-        print(event.start_time==today)
-        events = Event.objects.filter(start_time=today, user_id=user.id)
+        today = timezone.now().date()
+        events = Event.objects.filter(start_time__day=today, user_id=user.id)
         journal = Journal.objects.filter(date_of_entry=today, user_id=user.id)
         all_items_on_the_page = list(chain(events, journal))  # dodac taski
         journal_form = JournalInputForm
