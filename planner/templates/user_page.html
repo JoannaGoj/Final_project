@@ -3,7 +3,8 @@
 
 {% block content %}
 
-
+<h3>Today's planner</h3>
+    <p> {{ todays_date }}</p>
 {% for item in items %}
     {% if item.class_id == 'task' %}
         {% include 'task_card.html' %}

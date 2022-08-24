@@ -126,7 +126,7 @@ class ShowAllTasks(ListView):
 
 
 # need to prevent page refresh after posting journal notes
-class UserDailyPlanner(View):
+class UserDailyPlanner(LoginRequiredMixin, View):
     def get(self, request):
         today = date.today()
         # user_Id dodać
@@ -134,4 +134,4 @@ class UserDailyPlanner(View):
         journal = Journal.objects.filter(date_of_entry=today)
         all_items_on_the_page = list(chain(events, journal))  # dodac taski
         journal_form = JournalInputForm
-        return render(request, 'user_page.html', {'items': all_items_on_the_page, 'journal_form': journal_form})
+        return render(request, 'user_page.html', {'items': all_items_on_the_page, 'journal_form': journal_form, "todays_date": today})
