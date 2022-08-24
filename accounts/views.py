@@ -43,7 +43,10 @@ class RegisterView(View):
         return render(request, 'form_template.html', {'form': form})
 
 
-class LogoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect('manage_tags')
+
+
+# ma przekierowac na strone główna!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# class LogoutView(View):
+#     def get(self, request):
+#         logout(request)
+#         return redirect('main_page')

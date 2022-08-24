@@ -23,15 +23,17 @@ class AddTaskView(CreateView):
 
 
 # czemu end_time jest w formularzu przed start time?
-class ManageEventsView(View):
+class ManageEventsView(LoginRequiredMixin, View):
     def get(self, request):
         form = EventForm
-        events = Event.objects.all().order_by('-start_time')
+        user = request.user
+        events = Event.objects.filter(user_id=user.id).order_by('-start_time')
         return render(request, 'manage_events.html', {'form': form, 'events': events})
 
     def post(self, request):
         form = EventForm(request.POST)
-        events = Event.objects.all().order_by('-start_time')
+        user = request.user
+        events = Event.objects.filter(user_id=user.id).order_by('-start_time')
         if form.is_valid():
             event = form.save(commit=False)
             event.user = request.user
@@ -131,12 +133,14 @@ class ShowAllTasks(ListView):
 class UserDailyPlanner(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        today = timezone.now
-        events = Event.objects.filter(start_time=today, user_id=user)
-        event = Event.objects.filter(start_time=today)
-        for object in event:
-            print(object)
-        journal = Journal.objects.filter(date_of_entry=today, user_id=user)
+        today = timezone.now()
+        event = Event.objects.get(user_id=7)
+        print(event.start_time==today)
+        events = Event.objects.filter(start_time=today, user_id=user.id)
+        journal = Journal.objects.filter(date_of_entry=today, user_id=user.id)
         all_items_on_the_page = list(chain(events, journal))  # dodac taski
         journal_form = JournalInputForm
-        return render(request, 'user_page.html', {'items': all_items_on_the_page, 'journal_form': journal_form, "todays_date": today})
+        context = {"items": all_items_on_the_page,
+                   "journal_form": journal_form,
+                   "todays_date": today}
+        return render(request, 'user_page.html', context)

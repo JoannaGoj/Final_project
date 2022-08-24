@@ -18,7 +18,7 @@
                 <div class="card border-0" style="background-color: #BF79DB; width: 35rem;">
             {% endif %}
         <div class="card-body">
-            <h5 class="card-title">{{ event.name }}</h5>
+            <h5 class="card-title">{{ event.name }} user name: {{ event.user }} {{ event.user.id }}</h5>
             <h6 class="card-subtitle mb-2 text-muted">{{ event.show_event_dates }}
                 <span class="badge badge-pill badge-primary">{{ event.is_approaching_or_past.0 }}</span>
             </h6>
