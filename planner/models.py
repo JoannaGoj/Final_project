@@ -2,6 +2,7 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.timezone import now
+from django.utils import timezone
 from ckeditor.fields import RichTextField
 
 # Create your models here.
@@ -30,17 +31,18 @@ class Schedule(models.Model):
 
 # usunac additional notes to jest tymczasowe
 class Event(Schedule):
-    start_time = models.DateTimeField("End time", default=now)
-    end_time = models.DateTimeField("Start time", default=now)
+    start_time = models.DateTimeField("Start time", default=now)
+    end_time = models.DateTimeField("End time", default=now)
 
     def class_id(self):
         return "event"
 
     def is_approaching_or_past(self):
-        how_many_days_to_event = (date.today() - self.start_time.date()).days
+        today = timezone.now().date()
+        how_many_days_to_event = (today - self.start_time.date()).days
         if how_many_days_to_event > 0:
             is_past_or_approaching = 'Already past'
-        elif 3 < how_many_days_to_event < 0:
+        elif -3 < how_many_days_to_event < 0:
             is_past_or_approaching = 'Soon approaching!'
         else:
             is_past_or_approaching = 'In future'

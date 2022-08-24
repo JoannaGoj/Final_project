@@ -23,7 +23,7 @@
                 <span class="badge badge-pill badge-primary">{{ event.is_approaching_or_past.0 }}</span>
             </h6>
             <p class="card-text">{{ event.description }}</p>
-            <a href="{% url 'update_event' event.pk %}" class="btn btn-secondary">Edit event</a>
+            <a href="{% url 'update_event' event.pk %}" class="btn btn-primary">Edit event</a>
             <a href="{% url 'delete_event' event.pk %}" class="btn btn-danger">Delete event</a>
             {% if confirm_delete == 'delete' %}
                 <form method="post"> {% csrf_token %}

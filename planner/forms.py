@@ -36,8 +36,7 @@ class EventForm(forms.ModelForm):
 
     def clean(self):
         data = super().clean()
-        if data['end_time'] > data['start_time']:
-            print('2')
+        if data['end_time'] < data['start_time']:
             raise ValidationError('End time of event cannot be earlier than start time!')
         return data
 

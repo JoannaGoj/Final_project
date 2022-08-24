@@ -1,4 +1,4 @@
-from datetime import date
+from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
@@ -37,6 +37,7 @@ class ManageEventsView(View):
             event.user = request.user
             event.save()
             form = EventForm
+            return redirect('manageevents')
         return render(request, 'manage_events.html', {'form': form, 'events': events})
 
 
@@ -65,7 +66,7 @@ class DeleteEventView(View):
     def get(self, request, pk):
         form = EventForm
         events = Event.objects.all().order_by('-start_time')
-        return render(request, 'manage_events.html', {'events': events, 'message': "delete", 'event_pk': pk, 'form': form})
+        return render(request, 'manage_events.html', {'events': events, 'confirm_delete': "delete", 'event_pk': pk, 'form': form})
 
     def post(self, request, pk):
         event_to_delete = Event.objects.get(id=pk)
@@ -86,6 +87,7 @@ class ManageTags(View):
         tags = Tags.objects.all().order_by()
         if form.is_valid():
             form.save()
+            return redirect('manage_tags')
         return render(request, 'manage_tags.html', {'tags': tags, 'form': form})
 
 
@@ -128,10 +130,13 @@ class ShowAllTasks(ListView):
 # need to prevent page refresh after posting journal notes
 class UserDailyPlanner(LoginRequiredMixin, View):
     def get(self, request):
-        today = date.today()
-        # user_Id dodać
-        events = Event.objects.filter(start_time=today)
-        journal = Journal.objects.filter(date_of_entry=today)
+        user = request.user
+        today = timezone.now
+        events = Event.objects.filter(start_time=today, user_id=user)
+        event = Event.objects.filter(start_time=today)
+        for object in event:
+            print(object)
+        journal = Journal.objects.filter(date_of_entry=today, user_id=user)
         all_items_on_the_page = list(chain(events, journal))  # dodac taski
         journal_form = JournalInputForm
         return render(request, 'user_page.html', {'items': all_items_on_the_page, 'journal_form': journal_form, "todays_date": today})
