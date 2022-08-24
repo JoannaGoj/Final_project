@@ -37,19 +37,16 @@ class Event(Schedule):
         return "event"
 
     def is_approaching_or_past(self):
-        is_past_or_approaching = ""
         how_many_days_to_event = (date.today() - self.start_time.date()).days
-        if how_many_days_to_event < 0:
-            is_past_or_approaching += 'Already past'
-            return is_past_or_approaching, how_many_days_to_event
-        elif 0 <= how_many_days_to_event < 3:
-            is_past_or_approaching += 'Soon approaching!'
-            return is_past_or_approaching, how_many_days_to_event
+        if how_many_days_to_event > 0:
+            is_past_or_approaching = 'Already past'
+        elif 3 < how_many_days_to_event < 0:
+            is_past_or_approaching = 'Soon approaching!'
         else:
-            is_past_or_approaching += 'In future'
-            return is_past_or_approaching, how_many_days_to_event
+            is_past_or_approaching = 'In future'
+        return is_past_or_approaching, how_many_days_to_event
 
-    def __str__(self):
+    def show_event_dates(self):
         formatted_start_time = self.start_time.strftime("%H:%M")
         formatted_end_time = self.end_time.strftime("%H:%M")
         formatted_start_date = self.start_time.strftime('%d.%m.%Y')

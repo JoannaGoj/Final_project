@@ -22,19 +22,35 @@ class AddTaskView(CreateView):
     pass
 
 
+# czemu end_time jest w formularzu przed start time?
 class ManageEventsView(View):
     def get(self, request):
         form = EventForm
-        return render(request, 'manage_events.html', {'form': form})
+        events = Event.objects.all().order_by('-start_time')
+        return render(request, 'manage_events.html', {'form': form, 'events': events})
 
     def post(self, request):
         form = EventForm(request.POST)
+        events = Event.objects.all().order_by('-start_time')
         if form.is_valid():
             event = form.save(commit=False)
             event.user = request.user
             event.save()
-        return render(request, reverse('show_all_events'))
+            form = EventForm
+        return render(request, 'manage_events.html', {'form': form, 'events': events})
 
+
+class UpdateEventView(UpdateView):
+    model = Event
+    form_class = EventForm
+    template_name = 'manage_events.html'
+    success_url = reverse_lazy("manageevents")
+
+    def get_context_data(self, **kwargs):
+        events = Event.objects.all()
+        data = super().get_context_data(**kwargs)
+        data.update({'events': events})
+        return data
 
 
 class AddJournalEntryView(CreateView):
@@ -42,6 +58,20 @@ class AddJournalEntryView(CreateView):
     fields = ['name', 'text', 'user']
     template_name = 'form_template.html'
     success_url = reverse_lazy('example')
+
+
+
+class DeleteEventView(View):
+    def get(self, request, pk):
+        form = EventForm
+        events = Event.objects.all().order_by('-start_time')
+        return render(request, 'manage_events.html', {'events': events, 'message': "delete", 'event_pk': pk, 'form': form})
+
+    def post(self, request, pk):
+        event_to_delete = Event.objects.get(id=pk)
+        event_to_delete.delete()
+        return redirect('manageevents')
+
 
 
 class ManageTags(View):
@@ -95,17 +125,6 @@ class ShowAllTasks(ListView):
         return data
 
 
-class ShowAllEvents(ListView):
-    model = Event
-    template_name = 'manage_events.html'
-    fields = '__all__'
-
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data.update({'model': 'events'})
-        return data
-
-
 # need to prevent page refresh after posting journal notes
 class UserDailyPlanner(View):
     def get(self, request):
@@ -113,6 +132,6 @@ class UserDailyPlanner(View):
         # user_Id dodać
         events = Event.objects.filter(start_time=today)
         journal = Journal.objects.filter(date_of_entry=today)
-        all_items_on_the_page = list(chain(events, journal)) # dodac taski
+        all_items_on_the_page = list(chain(events, journal))  # dodac taski
         journal_form = JournalInputForm
         return render(request, 'user_page.html', {'items': all_items_on_the_page, 'journal_form': journal_form})

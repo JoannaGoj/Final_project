@@ -21,8 +21,9 @@ from planner import views
 urlpatterns = [
     path('add_task/', views.AddTaskView.as_view(), name='add_task'),
     path('all_tasks/', views.ShowAllTasks.as_view(), name='show_all_tasks'),
-    path('all_events/', views.ShowAllEvents.as_view(), name='show_all_events'),
-    path('add_event/', views.ManageEventsView.as_view(), name='add_event'),
+    path('manage_events/', views.ManageEventsView.as_view(), name='manageevents'),
+    path('update_event/<int:pk>/', views.UpdateEventView.as_view(), name="update_event"),
+    path('delete_event/<int:pk>/', views.DeleteEventView.as_view(), name="delete_event"),
     path('daily_planner/', views.UserDailyPlanner.as_view(), name='daily_planner'),
     path('manage_tags/', views.ManageTags.as_view(), name='manage_tags'),
     path('update_tag/<int:pk>/', views.UpdateTag.as_view(), name='update_tag'),

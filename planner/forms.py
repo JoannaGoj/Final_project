@@ -1,6 +1,7 @@
 from django.forms.widgets import TextInput, DateTimeInput
 from django import forms
 from .models import Journal, Tags, Task, Event
+from django.forms import ValidationError
 
 
 class JournalInputForm(forms.ModelForm):
@@ -32,3 +33,11 @@ class EventForm(forms.ModelForm):
                    'end_time': DateTimeInput(attrs={'type': 'datetime-local'}),
                     'tags': forms.CheckboxSelectMultiple()
         }
+
+    def clean(self):
+        data = super().clean()
+        if data['end_time'] > data['start_time']:
+            print('2')
+            raise ValidationError('End time of event cannot be earlier than start time!')
+        return data
+
