@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_filters %}
 {% block content %}
+    <h5>Manage your tags: </h5>
     <form method="post">
         {% csrf_token %}
         {{ form|crispy }}

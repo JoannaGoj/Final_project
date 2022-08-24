@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <h5>Manage your events: </h5>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <br>
+        <input type="submit" style="background-color: lightpink" value="Submit">
+    </form>
+    {% include 'show_all_objects_list.html' %}
+
+{% endblock %}

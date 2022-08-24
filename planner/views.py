@@ -22,10 +22,10 @@ class AddTaskView(CreateView):
     pass
 
 
-class AddEventView(View):
+class ManageEventsView(View):
     def get(self, request):
         form = EventForm
-        return render(request, 'form_template.html', {'form': form})
+        return render(request, 'manage_events.html', {'form': form})
 
     def post(self, request):
         form = EventForm(request.POST)
@@ -97,7 +97,7 @@ class ShowAllTasks(ListView):
 
 class ShowAllEvents(ListView):
     model = Event
-    template_name = 'show_all_events.html'
+    template_name = 'manage_events.html'
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
