@@ -221,6 +221,6 @@ class UserDailyPlanner(LoginRequiredMixin, View):
         context = {"items": all_items_on_the_page,
                    "journal_form": journal_form,
                    "todays_date": today.date(),
-                   'current_time': formatted_time
+                   'current_time': formatted_time,
                    }
         return render(request, 'user_page.html', context)
