@@ -20,7 +20,7 @@ from planner import views
 
 year = 5
 urlpatterns = [
-    path('', views.Redirect_to_daily_planner.as_view(), name='redirect_to_daily_planner'),
+    path('', views.RedirectToDailyPlanner.as_view(), name='redirect_to_daily_planner'),
     path('all_tasks/', views.ShowAllTasks.as_view(), name='show_all_tasks'),
     path('manage_events/', views.ManageEventsView.as_view(), name='manageevents'),
     path('update_event/<int:pk>/', views.UpdateEventView.as_view(), name="update_event"),

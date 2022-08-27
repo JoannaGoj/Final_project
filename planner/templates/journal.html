@@ -1,6 +1,7 @@
 {% load crispy_forms_filters %}
-{% csrf_token %}
-<form method="post">
-{{ journal_form.media }}
-    {{ journal_form|crispy}}
-   <input type="submit" value="Save entry" style="btn"> </form>
+<form method='post'>{% csrf_token %}
+    {{ journal_form.media }}
+    {{ journal_form|crispy }}
+    <br>
+    <input type="submit" style="background-color: lightpink" value="Submit">
+</form>

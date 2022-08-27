@@ -1,4 +1,4 @@
-<nav class="navbar sticky-top navbar navbar-expand-lg" style="background-color: #894A7F">
+<nav class="navbar sticky-top navbar navbar-expand-lg" style="background-color: #BF79DB">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'daily_planner' year month day %}">Planner</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -14,6 +14,12 @@
                     <a class="nav-link" href="{% url 'manageevents' %}">Manage events</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manage_tags' %}">Manage tags</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'show_all_journal_entries' %}">Journal</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item">
@@ -22,12 +28,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'show_all_journal_entries' %}">Journal</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'manage_tags' %}">manage tags</a>
-                </li>
+
             </ul>
         </div>
     </div>
