@@ -44,9 +44,7 @@ class RegisterView(View):
 
 
 
-
-# ma przekierowac na strone główna!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# class LogoutView(View):
-#     def get(self, request):
-#         logout(request)
-#         return redirect('main_page')
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('login')

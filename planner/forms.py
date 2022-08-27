@@ -7,9 +7,8 @@ from django.forms import ValidationError
 class JournalInputEntryForm(forms.ModelForm):
     class Meta:
         model = Journal
-        fields = ['date_of_entry','name', 'text']
+        fields = ['date_of_entry', 'name', 'text']
         widgets = {'date_of_entry': DateTimeInput(attrs={'type': 'datetime-local'})}
-
 
 
 class TagsForm(forms.ModelForm):
@@ -24,12 +23,15 @@ class TagsForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'description', 'tags', 'date', 'urgent']
+        fields = ['name', 'description', 'tags', 'date', 'urgent', 'completed']
         widgets = {'urgent': forms.RadioSelect,
                    'date': DateInput(attrs={
                        'placeholder': 'Select a date',
                        'type': 'date'}),
-                   'tags': forms.CheckboxSelectMultiple()}
+                        'tags': forms.CheckboxSelectMultiple(),
+                        'description': forms.TextInput,
+                        'completed': forms.CheckboxInput
+                   }
 
 
 class EventForm(forms.ModelForm):
@@ -38,12 +40,12 @@ class EventForm(forms.ModelForm):
         fields = ['name', 'description', 'tags', 'start_time', 'end_time']
         widgets = {'start_time': DateTimeInput(attrs={'type': 'datetime-local'}),
                    'end_time': DateTimeInput(attrs={'type': 'datetime-local'}),
-                    'tags': forms.CheckboxSelectMultiple()
-        }
+                   'tags': forms.CheckboxSelectMultiple(),
+                   'description': forms.TextInput
+                   }
 
     def clean(self):
         data = super().clean()
         if data['end_time'] < data['start_time']:
             raise ValidationError('End time of event cannot be earlier than start time!')
         return data
-

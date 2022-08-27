@@ -12,30 +12,34 @@
     <ul class="list-group">
         {% for task in tasks %}
             <li class="list-group-item border-0" style="background-color: transparent">
-            {% if task.urgent == 1 %}
-                <div class="card border-0" style="background-color:#a64dff ; width: 35rem;">
+            {% if task.completed == False %}
+                {% if task.urgent == 1 %}
+                    <div class="card border-0" style="background-color:#a64dff ; width: 35rem;">
+                {% endif %}
+                {% if task.urgent == 2 %}
+                    <div class="card border-0" style="background-color: #cc99ff; width: 35rem;">
+                {% endif %}
+                {% if task.urgent == 3 %}
+                    <div class="card border-0" style="background-color: #f2e6ff; width: 35rem;">
+                {% endif %}
+            {% elif task.completed == True %}
+            <div class="card border-0" style="opacity: 0.2; ; width: 35rem;">
             {% endif %}
-            {% if task.urgent == 2 %}
-                <div class="card border-0" style="background-color: #cc99ff; width: 35rem;">
-            {% endif %}
-            {% if task.urgent == 3 %}
-            <div class="card border-0" style="background-color: #f2e6ff; width: 35rem;">
-        {% endif %}
-    <div class="card-body">
-        <h5 class="card-title">{{ task.name }} </h5>
-        <p class="card-text">{{ task.description }}</p>
-            <a href="{% url 'update_task' task.pk %}" class="btn btn-primary">Edit task</a>
-            <a href="{% url 'delete_task' task.pk %}" class="btn btn-danger">Delete task</a>
-            {% if confirm_delete == 'delete' %}
-                <form method="post"> {% csrf_token %}
-                    {% if task.id == task_pk %}
-                        <input type="submit" value="Confirm delete" class="btn btn-danger">
-                        </form>
-                    {% endif %}
-            {% endif %}
-    </div>
-    </div>
-    {% endfor %}
-</ul>
+        <div class="card-body">
+            <h5 class="card-title">{{ task.name }} </h5>
+            <p class="card-text">{{ task.description }}</p>
+                <a href="{% url 'update_task' task.pk %}" class="btn btn-primary">Edit task</a>
+                <a href="{% url 'delete_task' task.pk %}" class="btn btn-danger">Delete task</a>
+                {% if confirm_delete == 'delete' %}
+                    <form method="post"> {% csrf_token %}
+                        {% if task.id == task_pk %}
+                            <input type="submit" value="Confirm delete" class="btn btn-danger">
+                            </form>
+                        {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </ul>
 
 {% endblock %}

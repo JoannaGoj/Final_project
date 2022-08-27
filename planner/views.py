@@ -31,6 +31,7 @@ class ManageTasksView(LoginRequiredMixin, View):
             return redirect('manage_tasks')
         return render(request, 'manage_tasks.html', {'form': form, 'tasks': tasks})
 
+
 class UpdateTaskView(LoginRequiredMixin, UpdateView):
     model = Task
     form_class = TaskForm
@@ -50,7 +51,7 @@ class DeleteTaskView(LoginRequiredMixin, View):
         form = TaskForm
         tasks = Task.objects.all().order_by('-date')
         return render(request, 'manage_tasks.html',
-                      {'tasks': tasks, 'confirm_delete': "delete", 'event_pk': pk, 'form': form})
+                      {'tasks': tasks, 'confirm_delete': "delete", 'task_pk': pk, 'form': form})
 
     def post(self, request, pk):
         task_to_delete = Task.objects.get(id=pk)

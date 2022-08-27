@@ -32,5 +32,5 @@ urlpatterns = [
     path('delete_journal_entry/<int:pk>/', views.DeleteJournalEntryView.as_view(), name='delete_journal_entry'),
     path('manage_tasks/', views.ManageTasksView.as_view(), name='manage_tasks'),
     path('update_task/<int:pk>/', views.UpdateTaskView.as_view(), name="update_task"),
-    path('delete_task/<int:pk>/', views.DeleteTaskView.as_view(), name="delete_task"),
+    path('delete_task/<int:pk>/', views.DeleteTaskView.as_view(), name="delete_task")
 ]
