@@ -20,6 +20,7 @@ from django.urls import path, include
 from planner import views as planner_views
 
 urlpatterns = [
+    path('', planner_views.Redirect_to_daily_planner.as_view(), name='redirect_to_daily_planner'),
     path('admin/', admin.site.urls),
     path('planner/', include('planner.urls')),
     path('accounts/', include('accounts.urls'))

@@ -11,7 +11,10 @@ from datetime import datetime
 
 # Create your views here.
 
-
+class Redirect_to_daily_planner(View):
+    def get(self, request):
+        today = datetime.now()
+        return redirect(reverse('daily_planner', kwargs={'year':today.year, 'month':today.month, 'day':today.day}))
 
 class ManageTasksView(LoginRequiredMixin, View):
     def get(self, request):
@@ -214,13 +217,12 @@ class UserDailyPlanner(LoginRequiredMixin, View):
                                       end_time__month__gte=month, end_time__year__gte=year, user_id=user.id)
         journal = Journal.objects.filter(date_of_entry__day=day, date_of_entry__month=month,
                                          date_of_entry__year=year, user_id=user.id)
-        all_items_on_the_page = list(chain(events, journal))  # dodac taski
+        tasks = Task.objects.filter(date__year=year, date__month=month, date__day=day, user_id=user.id)
+        all_items_on_the_page = list(chain(events, journal, tasks))  # dodac taski
         journal_form = JournalInputEntryForm
         today = datetime.now()
-        formatted_time = today.time().strftime('%H:%M')
         context = {"items": all_items_on_the_page,
                    "journal_form": journal_form,
-                   "todays_date": today.date(),
-                   'current_time': formatted_time,
+                   "todays_date": today
                    }
         return render(request, 'user_page.html', context)
