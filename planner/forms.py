@@ -7,8 +7,9 @@ from django.forms import ValidationError
 class JournalInputEntryForm(forms.ModelForm):
     class Meta:
         model = Journal
-        fields = ['date_of_entry', 'name', 'text']
-        widgets = {'date_of_entry': DateTimeInput(attrs={'type': 'datetime-local'})}
+        fields = ['date_of_entry', 'name', 'text', 'tags']
+        widgets = {'date_of_entry': DateTimeInput(attrs={'type': 'datetime-local'}),
+                   'tags': forms.CheckboxSelectMultiple()}
 
 
 class TagsForm(forms.ModelForm):
@@ -36,13 +37,15 @@ class TaskForm(forms.ModelForm):
 
 class EventForm(forms.ModelForm):
     class Meta:
+        tags = Tags.objects.order_by('id')
         model = Event
         fields = ['name', 'description', 'tags', 'start_time', 'end_time']
-        widgets = {'start_time': DateTimeInput(attrs={'type': 'datetime-local'}),
-                   'end_time': DateTimeInput(attrs={'type': 'datetime-local'}),
-                   'tags': forms.CheckboxSelectMultiple(),
-                   'description': forms.TextInput
-                   }
+        for tag in tags:
+            widgets = {'start_time': DateTimeInput(attrs={'type': 'datetime-local'}),
+                       'end_time': DateTimeInput(attrs={'type': 'datetime-local'}),
+                       'tags': forms.CheckboxSelectMultiple(),
+                       'description': forms.TextInput
+                       }
 
     def clean(self):
         data = super().clean()

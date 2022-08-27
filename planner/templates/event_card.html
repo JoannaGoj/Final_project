@@ -7,6 +7,10 @@
             {% endif %}
         <div class="card-body">
             <h5 class="card-title">{{ item.name }}</h5>
+                        {% for tag in item.tags.all %}
+                <span class="badge rounded-pill" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
+            {% endfor %}
+
             <h6 class="card-subtitle mb-2 text-muted">{{ item.show_event_dates }}
                 <span class="badge badge-pill badge-primary">{{ item.is_approaching_or_past.0 }}</span>
             </h6>
