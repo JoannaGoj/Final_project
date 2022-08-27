@@ -20,7 +20,7 @@ URGENT = (
 class Schedule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
-    description = models.TextField(max_length=250, blank=True)
+    description = models.TextField(max_length=250)
     cancelled = models.BooleanField(default=False)
     updated_at = models.DateTimeField('%d.%m.%Y', null=True)
     tags = models.ManyToManyField('Tags', blank=True)
@@ -28,8 +28,10 @@ class Schedule(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.name
 
-# usunac additional notes to jest tymczasowe
+
 class Event(Schedule):
     start_time = models.DateTimeField("Start time", default=now)
     end_time = models.DateTimeField("End time", default=now)
@@ -40,13 +42,15 @@ class Event(Schedule):
     def is_approaching_or_past(self):
         today = timezone.now().date()
         how_many_days_to_event = (today - self.start_time.date()).days
-        if how_many_days_to_event > 0:
+        if self.end_time.date() < today:
             is_past_or_approaching = 'Already past'
-        elif -3 < how_many_days_to_event < 0:
+            return is_past_or_approaching, how_many_days_to_event
+        elif -3 <= how_many_days_to_event <= 0:
             is_past_or_approaching = 'Soon approaching!'
-        else:
+            return is_past_or_approaching, how_many_days_to_event
+        elif how_many_days_to_event < -3:
             is_past_or_approaching = 'In future'
-        return is_past_or_approaching, how_many_days_to_event
+            return is_past_or_approaching, how_many_days_to_event
 
     def show_event_dates(self):
         formatted_start_time = self.start_time.strftime("%H:%M")

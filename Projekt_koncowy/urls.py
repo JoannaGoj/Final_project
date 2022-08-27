@@ -21,7 +21,6 @@ from planner import views as planner_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', planner_views.Example.as_view(), name='example'),
     path('planner/', include('planner.urls')),
     path('accounts/', include('accounts.urls'))
 ]

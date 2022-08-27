@@ -7,15 +7,19 @@ from .models import Task, Event, Journal, Tags
 from django.urls import reverse_lazy, reverse
 from itertools import chain
 from .forms import JournalInputForm, TagsForm, EventForm
+from datetime import datetime
 
 
 # Create your views here.
 
 
-class Example(View):
-    def get(self, request):
-        tasks = Task.objects.all()
-        return render(request, 'example_user_page.html', {'tasks': tasks})
+# class Example(View):
+#     def get(self, request):
+#         tasks = Task.objects.all()
+#         return render(request, 'user_page.html', {'tasks': tasks})
+
+
+
 
 
 class AddTaskView(CreateView):
@@ -63,12 +67,12 @@ class AddJournalEntryView(CreateView):
     success_url = reverse_lazy('example')
 
 
-
 class DeleteEventView(View):
     def get(self, request, pk):
         form = EventForm
         events = Event.objects.all().order_by('-start_time')
-        return render(request, 'manage_events.html', {'events': events, 'confirm_delete': "delete", 'event_pk': pk, 'form': form})
+        return render(request, 'manage_events.html',
+                      {'events': events, 'confirm_delete': "delete", 'event_pk': pk, 'form': form})
 
     def post(self, request, pk):
         event_to_delete = Event.objects.get(id=pk)
@@ -76,13 +80,12 @@ class DeleteEventView(View):
         return redirect('manageevents')
 
 
-
 class ManageTags(View):
     def get(self, request):
         tags = Tags.objects.all().order_by()
         form = TagsForm
         events = Event.objects.all()
-        return render(request, 'manage_tags.html', {'tags': tags, 'form': form, 'events':events})
+        return render(request, 'manage_tags.html', {'tags': tags, 'form': form, 'events': events})
 
     def post(self, request):
         form = TagsForm(request.POST)
@@ -104,6 +107,7 @@ class UpdateTag(UpdateView):
         data = super().get_context_data(**kwargs)
         data.update({'tags': all_tags})
         return data
+
 
 # czemu pierwszy przycisk delete zjezdza na doł? Trzeba to poprawic
 class DeleteTagView(View):
@@ -131,14 +135,21 @@ class ShowAllTasks(ListView):
 
 # need to prevent page refresh after posting journal notes
 class UserDailyPlanner(LoginRequiredMixin, View):
-    def get(self, request):
+    def get(self, request, year, month, day):
         user = request.user
-        today = timezone.now().date()
-        events = Event.objects.filter(start_time__day=today, user_id=user.id)
-        journal = Journal.objects.filter(date_of_entry=today, user_id=user.id)
+        # events = Event.objects.filter(user_id=user.id)
+        events = Event.objects.filter(start_time__day__lte=day, start_time__month__lte=month,
+                                      start_time__year__lte=year, end_time__day__gte=day,
+                                      end_time__month__gte=month, end_time__year__gte=year, user_id=user.id)
+        # journal = Journal.objects.filter(user_id=user.id)
+        journal = Journal.objects.filter(date_of_entry__day=day, date_of_entry__month=month,
+                                         date_of_entry__year=year, user_id=user.id)
         all_items_on_the_page = list(chain(events, journal))  # dodac taski
         journal_form = JournalInputForm
+        today = datetime.now()
         context = {"items": all_items_on_the_page,
                    "journal_form": journal_form,
-                   "todays_date": today}
+                   "todays_date": today.date()
+                   'current_time': today.time()
+                   }
         return render(request, 'user_page.html', context)
