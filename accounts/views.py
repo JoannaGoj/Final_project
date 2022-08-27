@@ -1,4 +1,6 @@
 # Create your views here.
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.views import View
 from django.urls import reverse, reverse_lazy
@@ -21,7 +23,11 @@ class Login(View):
             user = authenticate(request,username=username, password=password)
             if user is not None:
                 login(request, user)
-                url = request.GET.get('next', reverse('manage_tags'))
+                today = datetime.now()
+                year = today.year
+                month = today.month
+                day = today.day
+                url = request.GET.get('next', reverse('daily_planner', kwargs={'year':year, 'month':month, 'day':day}))
                 return redirect(url)
         else:
             form = LoginForm
