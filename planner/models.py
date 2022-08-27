@@ -66,7 +66,7 @@ class Event(Schedule):
 
 
 class Task(Schedule):
-    date = models.DateTimeField("%d.%m.%Y,%H:%M", default=now)
+    date = models.DateField('Date', default=now)
     urgent = models.IntegerField(choices=URGENT, default=2)
     completed = models.BooleanField(default=False)
 
@@ -86,8 +86,10 @@ class Journal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=60, blank=True)
     text = RichTextField(blank=True, null=True)
-    date_of_entry = models.DateTimeField(auto_now_add=True)
+    date_of_entry = models.DateTimeField(default=now)
     tags = models.ManyToManyField(Tags, blank=True)
 
+    def __str__(self):
+        return self.name
     def class_id(self):
         return "journal"

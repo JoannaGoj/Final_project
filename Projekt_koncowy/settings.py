@@ -104,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -129,5 +129,12 @@ MEDIA_ROOT = BASE_DIR
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_URL = reverse_lazy('login')
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'height': 'full',
+        'width': 'full',
+    },
+}
 
 

@@ -1,4 +1,3 @@
-from django.utils import timezone
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView
@@ -6,24 +5,57 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Task, Event, Journal, Tags
 from django.urls import reverse_lazy, reverse
 from itertools import chain
-from .forms import JournalInputForm, TagsForm, EventForm
+from .forms import JournalInputEntryForm, TagsForm, EventForm, TaskForm
 from datetime import datetime
 
 
 # Create your views here.
 
 
-# class Example(View):
-#     def get(self, request):
-#         tasks = Task.objects.all()
-#         return render(request, 'user_page.html', {'tasks': tasks})
+
+class ManageTasksView(LoginRequiredMixin, View):
+    def get(self, request):
+        form = TaskForm
+        user = request.user
+        tasks = Task.objects.filter(user_id=user.id).order_by('-date')
+        return render(request, 'manage_tasks.html', {'form': form, 'tasks': tasks})
+
+    def post(self, request):
+        form = TaskForm(request.POST)
+        user = request.user
+        tasks = Task.objects.filter(user_id=user.id).order_by('-date')
+        if form.is_valid():
+            task = form.save(commit=False)
+            task.user = request.user
+            task.save()
+            return redirect('manage_tasks')
+        return render(request, 'manage_tasks.html', {'form': form, 'tasks': tasks})
+
+class UpdateTaskView(LoginRequiredMixin, UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'manage_tasks.html'
+    success_url = reverse_lazy("manage_tasks")
+
+    def get_context_data(self, **kwargs):
+        user = self.request.user
+        tasks = Task.objects.filter(user_id=user.id).order_by('-date')
+        data = super().get_context_data(**kwargs)
+        data.update({'tasks': tasks})
+        return data
 
 
+class DeleteTaskView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        form = TaskForm
+        tasks = Task.objects.all().order_by('-date')
+        return render(request, 'manage_tasks.html',
+                      {'tasks': tasks, 'confirm_delete': "delete", 'event_pk': pk, 'form': form})
 
-
-
-class AddTaskView(CreateView):
-    pass
+    def post(self, request, pk):
+        task_to_delete = Task.objects.get(id=pk)
+        task_to_delete.delete()
+        return redirect('manage_tasks')
 
 
 # czemu end_time jest w formularzu przed start time?
@@ -42,32 +74,27 @@ class ManageEventsView(LoginRequiredMixin, View):
             event = form.save(commit=False)
             event.user = request.user
             event.save()
-            form = EventForm
             return redirect('manageevents')
         return render(request, 'manage_events.html', {'form': form, 'events': events})
 
 
-class UpdateEventView(UpdateView):
+
+
+class UpdateEventView(LoginRequiredMixin, UpdateView):
     model = Event
     form_class = EventForm
     template_name = 'manage_events.html'
     success_url = reverse_lazy("manageevents")
 
     def get_context_data(self, **kwargs):
-        events = Event.objects.all()
+        user = self.request.user
+        events = Event.objects.filter(user_id=user.id).order_by('-start_time')
         data = super().get_context_data(**kwargs)
         data.update({'events': events})
         return data
 
 
-class AddJournalEntryView(CreateView):
-    model = Journal
-    fields = ['name', 'text', 'user']
-    template_name = 'form_template.html'
-    success_url = reverse_lazy('example')
-
-
-class DeleteEventView(View):
+class DeleteEventView(LoginRequiredMixin, View):
     def get(self, request, pk):
         form = EventForm
         events = Event.objects.all().order_by('-start_time')
@@ -80,23 +107,67 @@ class DeleteEventView(View):
         return redirect('manageevents')
 
 
-class ManageTags(View):
+class ShowAllJournalView(LoginRequiredMixin, View):
     def get(self, request):
-        tags = Tags.objects.all().order_by()
+        user = request.user
+        form = JournalInputEntryForm
+        user_journal_entries = Journal.objects.filter(user_id=user.id)
+        return render(request, 'show_all_journal_entries.html',
+                      {'user_journal_entries': user_journal_entries, 'form': form})
+
+    def post(self, request):
+        form = JournalInputEntryForm(request.POST)
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.user = request.user
+            entry.save()
+            return redirect('show_all_journal_entries')
+        return render(request, 'show_all_journal_entries.html', {'form': form})
+
+
+class UpdateJournalEntryView(LoginRequiredMixin, UpdateView):
+    model = Journal
+    form_class = JournalInputEntryForm
+    template_name = 'show_all_journal_entries.html'
+    success_url = reverse_lazy("show_all_journal_entries")
+
+    def get_context_data(self, **kwargs):
+        user_journal_entries = Journal.objects.filter(user=self.request.user)
+        data = super().get_context_data(**kwargs)
+        data.update({'user_journal_entries': user_journal_entries})
+        return data
+
+
+class DeleteJournalEntryView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        form = JournalInputEntryForm
+        user = request.user
+        user_journal_entries = Journal.objects.filter(user_id=user.id)
+        return render(request, 'show_all_journal_entries.html',
+                      {'user_journal_entries': user_journal_entries,'form': form, 'entry_pk': pk, 'message': "delete"})
+
+    def post(self, request, pk):
+        entry_to_delete = Journal.objects.get(id=pk)
+        entry_to_delete.delete()
+        return redirect('show_all_journal_entries')
+
+
+class ManageTags(LoginRequiredMixin, View):
+    def get(self, request):
+        tags = Tags.objects.all()
         form = TagsForm
-        events = Event.objects.all()
-        return render(request, 'manage_tags.html', {'tags': tags, 'form': form, 'events': events})
+        return render(request, 'manage_tags.html', {'tags': tags, 'form': form})
 
     def post(self, request):
         form = TagsForm(request.POST)
-        tags = Tags.objects.all().order_by()
+        tags = Tags.objects.all()
         if form.is_valid():
             form.save()
             return redirect('manage_tags')
         return render(request, 'manage_tags.html', {'tags': tags, 'form': form})
 
 
-class UpdateTag(UpdateView):
+class UpdateTag(LoginRequiredMixin, UpdateView):
     model = Tags
     form_class = TagsForm
     template_name = 'manage_tags.html'
@@ -110,7 +181,7 @@ class UpdateTag(UpdateView):
 
 
 # czemu pierwszy przycisk delete zjezdza na doł? Trzeba to poprawic
-class DeleteTagView(View):
+class DeleteTagView(LoginRequiredMixin, View):
     def get(self, request, pk):
         form = TagsForm
         all_tags = Tags.objects.all()
@@ -119,10 +190,10 @@ class DeleteTagView(View):
     def post(self, request, pk):
         tag_to_delete = Tags.objects.get(id=pk)
         tag_to_delete.delete()
-        return redirect(reverse('manage_tags'))
+        return redirect('manage_tags')
 
 
-class ShowAllTasks(ListView):
+class ShowAllTasks(LoginRequiredMixin, ListView):
     model = Task
     template_name = 'show_all_tasks.html'
     fields = '__all__'
@@ -137,19 +208,18 @@ class ShowAllTasks(ListView):
 class UserDailyPlanner(LoginRequiredMixin, View):
     def get(self, request, year, month, day):
         user = request.user
-        # events = Event.objects.filter(user_id=user.id)
         events = Event.objects.filter(start_time__day__lte=day, start_time__month__lte=month,
                                       start_time__year__lte=year, end_time__day__gte=day,
                                       end_time__month__gte=month, end_time__year__gte=year, user_id=user.id)
-        # journal = Journal.objects.filter(user_id=user.id)
         journal = Journal.objects.filter(date_of_entry__day=day, date_of_entry__month=month,
                                          date_of_entry__year=year, user_id=user.id)
         all_items_on_the_page = list(chain(events, journal))  # dodac taski
-        journal_form = JournalInputForm
+        journal_form = JournalInputEntryForm
         today = datetime.now()
+        formatted_time = today.time().strftime('%H:%M')
         context = {"items": all_items_on_the_page,
                    "journal_form": journal_form,
-                   "todays_date": today.date()
-                   'current_time': today.time()
+                   "todays_date": today.date(),
+                   'current_time': formatted_time
                    }
         return render(request, 'user_page.html', context)

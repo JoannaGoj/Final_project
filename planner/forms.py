@@ -1,13 +1,15 @@
-from django.forms.widgets import TextInput, DateTimeInput
+from django.forms.widgets import TextInput, DateTimeInput, DateInput
 from django import forms
 from .models import Journal, Tags, Task, Event
 from django.forms import ValidationError
 
 
-class JournalInputForm(forms.ModelForm):
+class JournalInputEntryForm(forms.ModelForm):
     class Meta:
         model = Journal
-        fields = ['name', 'text']
+        fields = ['date_of_entry','name', 'text']
+        widgets = {'date_of_entry': DateTimeInput(attrs={'type': 'datetime-local'})}
+
 
 
 class TagsForm(forms.ModelForm):
@@ -22,7 +24,12 @@ class TagsForm(forms.ModelForm):
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'description', 'tags', 'urgent']
+        fields = ['name', 'description', 'tags', 'date', 'urgent']
+        widgets = {'urgent': forms.RadioSelect,
+                   'date': DateInput(attrs={
+                       'placeholder': 'Select a date',
+                       'type': 'date'}),
+                   'tags': forms.CheckboxSelectMultiple()}
 
 
 class EventForm(forms.ModelForm):
