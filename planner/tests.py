@@ -146,3 +146,44 @@ def test_delete_event_get_not_logged_in(client, event):
     response = client.get(url)
     assert response.status_code == 302
     assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_delete_event_get_login(client, user, event):
+    url = reverse('delete_event', args=(event.id,))
+    client.force_login(user)
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_delete_event_post(client, user, event):
+    url = reverse('delete_event', args=(event.id,))
+    data = {
+        'pk':event.id
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+
+@pytest.mark.django_db
+def test_delete_task_get_not_logged_in(client, task):
+    url = reverse('delete_task', args=(task.id,))
+    response = client.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_delete_event_get_login(client, user, event):
+    url = reverse('delete_event', args=(event.id,))
+    client.force_login(user)
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_delete_event_post(client, user, event):
+    url = reverse('delete_event', args=(event.id,))
+    data = {
+        'pk':event.id
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
