@@ -8,30 +8,29 @@ from accounts.forms import LoginForm, RegisterForm
 from django.contrib.auth import authenticate, login, logout
 
 
-# można
-
 class Login(View):
     def get(self, request):
         form = LoginForm
-        return render(request, 'form_template.html', {'form':form})
+        return render(request, 'form_template.html', {'form': form})
 
     def post(self, request):
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            user = authenticate(request,username=username, password=password)
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 today = datetime.now()
                 year = today.year
                 month = today.month
                 day = today.day
-                url = request.GET.get('next', reverse('daily_planner', kwargs={'year':year, 'month':month, 'day':day}))
+                url = request.GET.get('next',
+                                      reverse('daily_planner', kwargs={'year': year, 'month': month, 'day': day}))
                 return redirect(url)
         else:
             form = LoginForm
-        return render(request, 'form_template.html', {'form': form, 'message':'nope'})
+        return render(request, 'form_template.html', {'form': form, 'message': 'Invalid login or password'})
 
 
 class RegisterView(View):
@@ -47,7 +46,6 @@ class RegisterView(View):
             register.save()
             return redirect('login')
         return render(request, 'form_template.html', {'form': form})
-
 
 
 class LogoutView(View):
