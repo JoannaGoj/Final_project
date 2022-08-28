@@ -9,11 +9,11 @@
         <h6 class="card-subtitle mb-2 text-muted">{{ item.show_event_dates }}
             <span class="badge badge-pill badge-primary">{{ item.is_approaching_or_past.0 }}</span>
         </h6>
-        <p class="card-text">{{ item.description }}</p>
-    <div>
-        {% for tag in item.tags.all %}
+                {% for tag in item.tags.all %}
             <span class="badge rounded-pill" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
         {% endfor %}
+        <p class="card-text">{{ item.description }}</p>
+    <div>
     </div>
         <a href="{% url 'update_event' item.pk %}" class="btn btn-primary">Edit event</a>
         <a href="{% url 'delete_event' item.pk %}" class="btn btn-danger">Delete event</a>

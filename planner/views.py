@@ -219,10 +219,8 @@ class UserDailyPlanner(LoginRequiredMixin, View):
                                          date_of_entry__year=year, user_id=user.id)
         tasks = Task.objects.filter(date__year=year, date__month=month, date__day=day, user_id=user.id)
         all_items_on_the_page = list(chain(events, journal, tasks))
-        journal_form = JournalInputEntryForm
         today = datetime.now()
         context = {"items": all_items_on_the_page,
-                   "journal_form": journal_form,
                    "todays_date": today
                    }
         return render(request, 'user_page.html', context)
