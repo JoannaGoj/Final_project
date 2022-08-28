@@ -59,6 +59,7 @@ def test_manage_tasks_post(client, user):
     client.force_login(user)
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('manage_tasks')
 
 
 @pytest.mark.django_db
@@ -91,6 +92,7 @@ def test_manage_events_post(client, user):
     client.force_login(user)
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('manageevents')
 
 
 @pytest.mark.django_db
@@ -118,6 +120,7 @@ def test_manage_tags_post(client, user):
     client.force_login(user)
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('manage_tags')
 
 
 @pytest.mark.django_db
@@ -149,6 +152,7 @@ def test_show_journal_post(client, user):
     client.force_login(user)
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('show_all_journal_entries')
 
 
 @pytest.mark.django_db
@@ -234,6 +238,7 @@ def test_tag_update_post(client, user, tag):
     assert response.url == reverse('manage_tags')
 
 
+
 @pytest.mark.django_db
 def test_update_journal_get_not_logged_in(client, journal):
     url = reverse('update_journal_entry', args=(journal.id,))
@@ -297,6 +302,7 @@ def test_task_update_post(client, user, task):
     client.force_login(user)
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('manage_tasks')
 
 
 @pytest.mark.django_db
@@ -324,6 +330,7 @@ def test_delete_event_post(client, user, event):
     }
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('manageevents')
 
 
 @pytest.mark.django_db
@@ -351,6 +358,7 @@ def test_delete_task_post(client, user, task):
     }
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('manage_tasks')
 
 
 @pytest.mark.django_db
@@ -370,7 +378,7 @@ def test_delete_journal_get_login(client, user, journal):
 
 
 @pytest.mark.django_db
-def test_delete_task_post(client, user, journal):
+def test_delete_journal_post(client, user, journal):
     client.force_login(user)
     url = reverse('delete_journal_entry', args=(journal.id,))
     data = {
@@ -378,6 +386,7 @@ def test_delete_task_post(client, user, journal):
     }
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('show_all_journal_entries')
 
 
 @pytest.mark.django_db
@@ -405,3 +414,4 @@ def test_delete_tag_post(client, user, tag):
     }
     response = client.post(url, data)
     assert response.status_code == 302
+    assert response.url == reverse('manage_tags')
