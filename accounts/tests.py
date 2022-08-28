@@ -3,10 +3,6 @@ from datetime import datetime
 from freezegun import freeze_time
 import pytest
 from django.urls import reverse
-from django.contrib.auth.models import User
-
-from accounts.forms import RegisterForm
-
 
 # Create your tests here.
 

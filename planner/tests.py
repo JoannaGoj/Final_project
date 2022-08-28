@@ -4,17 +4,12 @@ import pytest
 from django.urls import reverse
 from freezegun import freeze_time
 
-from planner.models import Task
+from planner.models import Task, Event, Tags, Journal
 
 
 # Create your tests here.
 
 
-@pytest.mark.django_db
-def test_redirect_not_logged_in(client):
-    url = reverse('redirect_to_daily_planner')
-    response = client.get(url)
-    assert response.status_code == 302
 
 
 @freeze_time("Jan 14th, 2012")
@@ -60,6 +55,7 @@ def test_manage_tasks_post(client, user):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('manage_tasks')
+    assert Task.objects.get(**data)
 
 
 @pytest.mark.django_db
@@ -93,6 +89,7 @@ def test_manage_events_post(client, user):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('manageevents')
+    assert Event.objects.get(**data)
 
 
 @pytest.mark.django_db
@@ -121,6 +118,7 @@ def test_manage_tags_post(client, user):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('manage_tags')
+    assert Tags.objects.get(**data)
 
 
 @pytest.mark.django_db
@@ -153,6 +151,7 @@ def test_show_journal_post(client, user):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('show_all_journal_entries')
+    assert Journal.objects.get(**data)
 
 
 @pytest.mark.django_db
@@ -208,6 +207,7 @@ def test_event_update_post(client, user, event):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('manageevents')
+    assert Event.objects.get(**data)
 
 
 @pytest.mark.django_db
@@ -236,6 +236,7 @@ def test_tag_update_post(client, user, tag):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('manage_tags')
+    assert Tags.objects.get(**data)
 
 
 
@@ -269,6 +270,7 @@ def test_journal_update_post(client, user, journal):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('show_all_journal_entries')
+    assert Journal.objects.get(**data)
 
 
 @pytest.mark.django_db
@@ -303,6 +305,7 @@ def test_task_update_post(client, user, task):
     response = client.post(url, data)
     assert response.status_code == 302
     assert response.url == reverse('manage_tasks')
+    assert Task.objects.get(**data)
 
 
 @pytest.mark.django_db

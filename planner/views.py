@@ -197,16 +197,6 @@ class DeleteTagView(LoginRequiredMixin, View):
         return redirect('manage_tags')
 
 
-class ShowAllTasks(LoginRequiredMixin, ListView):
-    model = Task
-    template_name = 'show_all_tasks.html'
-    fields = '__all__'
-
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data.update({'model': 'tasks'})
-        return data
-
 
 
 class UserDailyPlanner(LoginRequiredMixin, View):
@@ -223,27 +213,4 @@ class UserDailyPlanner(LoginRequiredMixin, View):
         context = {"items": all_items_on_the_page,
                    "todays_date": today
                    }
-        return render(request, 'user_page.html', context)
-
-    def post(self, request, day, month, year):
-        form = JournalInputEntryForm(request.POST)
-        user = request.user
-        events = Event.objects.filter(start_time__day__lte=day, start_time__month__lte=month,
-                                      start_time__year__lte=year, end_time__day__gte=day,
-                                      end_time__month__gte=month, end_time__year__gte=year, user_id=user.id)
-        journal = Journal.objects.filter(date_of_entry__day=day, date_of_entry__month=month,
-                                         date_of_entry__year=year, user_id=user.id)
-        tasks = Task.objects.filter(date__year=year, date__month=month, date__day=day, user_id=user.id)
-        all_items_on_the_page = list(chain(events, journal, tasks))
-        journal_form = JournalInputEntryForm
-        today = datetime.now()
-        context = {"items": all_items_on_the_page,
-                   "journal_form": journal_form,
-                   "todays_date": today
-                   }
-        if form.is_valid():
-            entry = form.save(commit=False)
-            entry.user = request.user
-            entry.save()
-            return redirect(reverse('daily_planner', kwargs={'year':year, 'month':month, 'day':day}))
         return render(request, 'user_page.html', context)
