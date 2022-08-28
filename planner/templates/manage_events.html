@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <h5>Manage your events: </h5>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <br>
+        <input type="submit" style="background-color: lightpink" value="Submit">
+    </form>
+    <br>
+    <ul class="list-group">
+        {% for event in events %}
+            <li class="list-group-item border-0" style="background-color: transparent">
+            {% if event.is_approaching_or_past.0 == 'Already past' %}
+                <div class="card border-0" style="opacity: 0.2; width: 35rem;">
+            {% else %}
+                <div class="card border-0" style="background-color: #BF79DB; width: 35rem;">
+            {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ event.name }} user name: {{ event.user }} {{ event.user.id }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ event.show_event_dates }}
+                <span class="badge badge-pill badge-primary">{{ event.is_approaching_or_past.0 }}</span>
+            </h6>
+            <p class="card-text">{{ event.description }}</p>
+            <a href="{% url 'update_event' event.pk %}" class="btn btn-primary">Edit event</a>
+            <a href="{% url 'delete_event' event.pk %}" class="btn btn-danger">Delete event</a>
+            {% if confirm_delete == 'delete' %}
+                <form method="post"> {% csrf_token %}
+                    {% if event.id == event_pk %}
+                        <input type="submit" value="Confirm delete" class="btn btn-danger">
+                        </form>
+                    {% endif %}
+            {% endif %}
+        </div>
+
+        </div>
+        {% endfor %}
+    </ul>
+{% endblock %}

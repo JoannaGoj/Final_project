@@ -2,6 +2,7 @@ from datetime import date
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.timezone import now
+from django.utils import timezone
 from ckeditor.fields import RichTextField
 
 # Create your models here.
@@ -15,11 +16,10 @@ URGENT = (
 )
 
 
-# musze pousuwac start time i endtime ze schedule i przeniesc to do eventow tylko
 class Schedule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
-    description = models.TextField(max_length=250, blank=True)
+    description = models.TextField(max_length=250, blank=True, null=True)
     cancelled = models.BooleanField(default=False)
     updated_at = models.DateTimeField('%d.%m.%Y', null=True)
     tags = models.ManyToManyField('Tags', blank=True)
@@ -27,29 +27,31 @@ class Schedule(models.Model):
     class Meta:
         abstract = True
 
+    def __str__(self):
+        return self.name
 
-# usunac additional notes to jest tymczasowe
+
 class Event(Schedule):
-    start_time = models.DateTimeField("End time", default=now)
-    end_time = models.DateTimeField("Start time", default=now)
+    start_time = models.DateTimeField("Start time", default=now)
+    end_time = models.DateTimeField("End time", default=now)
 
     def class_id(self):
         return "event"
 
     def is_approaching_or_past(self):
-        is_past_or_approaching = ""
-        how_many_days_to_event = (date.today() - self.start_time.date()).days
-        if how_many_days_to_event < 0:
-            is_past_or_approaching += 'Already past'
+        today = timezone.now().date()
+        how_many_days_to_event = (today - self.start_time.date()).days
+        if self.end_time.date() < today:
+            is_past_or_approaching = 'Already past'
             return is_past_or_approaching, how_many_days_to_event
-        elif 0 <= how_many_days_to_event < 3:
-            is_past_or_approaching += 'Soon approaching!'
+        elif -3 <= how_many_days_to_event <= 0:
+            is_past_or_approaching = 'Soon approaching!'
             return is_past_or_approaching, how_many_days_to_event
-        else:
-            is_past_or_approaching += 'In future'
+        elif how_many_days_to_event < -3:
+            is_past_or_approaching = 'In future'
             return is_past_or_approaching, how_many_days_to_event
 
-    def __str__(self):
+    def show_event_dates(self):
         formatted_start_time = self.start_time.strftime("%H:%M")
         formatted_end_time = self.end_time.strftime("%H:%M")
         formatted_start_date = self.start_time.strftime('%d.%m.%Y')
@@ -63,7 +65,7 @@ class Event(Schedule):
 
 
 class Task(Schedule):
-    date = models.DateTimeField("%d.%m.%Y,%H:%M", default=now)
+    date = models.DateField('Date', default=now)
     urgent = models.IntegerField(choices=URGENT, default=2)
     completed = models.BooleanField(default=False)
 
@@ -83,8 +85,10 @@ class Journal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=60, blank=True)
     text = RichTextField(blank=True, null=True)
-    date_of_entry = models.DateTimeField(auto_now_add=True)
+    date_of_entry = models.DateTimeField(default=now)
     tags = models.ManyToManyField(Tags, blank=True)
 
+    def __str__(self):
+        return self.name
     def class_id(self):
         return "journal"
