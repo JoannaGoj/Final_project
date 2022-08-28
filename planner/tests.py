@@ -1,10 +1,27 @@
-from django.test import TestCase
+
 import pytest
 from django.urls import reverse
-
+from freezegun import freeze_time
 
 
 # Create your tests here.
+
+
+
+@pytest.mark.django_db
+def test_redirect_not_logged_in(client):
+    url = reverse('redirect_to_daily_planner')
+    response = client.get(url)
+    assert response.status_code == 302
+
+# @freeze_time("Jan 14th, 2012")
+# @pytest.mark.django_db
+# def test_redirect_login(client, user):
+#     url = reverse('redirect_to_daily_planner')
+#     client.force_login(user)
+#     response = client.get(url)
+#     assert response.status_code == 302
+#     assert response.url == reverse('daily_planner', args='2012,1,14,')
 
 
 # ok
@@ -22,11 +39,10 @@ def test_manage_tasks_get_login(client, user, tasks_list):
     client.force_login(user)
     response = client.get(url)
     assert response.status_code == 200
-    assert response.context['object_list'].count() == len(tasks_list)
-    # for t in tasks:
-    #     assert t in response.context['object_list']
 
 
+
+# NIE DZILAA UWAGA UWAGA UWAGA
 @pytest.mark.django_db
 def test_manage_tasks_post_login(client, user):
     url = reverse('manage_tasks')
@@ -173,17 +189,71 @@ def test_delete_task_get_not_logged_in(client, task):
 
 
 @pytest.mark.django_db
-def test_delete_event_get_login(client, user, event):
-    url = reverse('delete_event', args=(event.id,))
+def test_delete_task_get_login(client, user, task):
+    url = reverse('delete_task', args=(task.id,))
     client.force_login(user)
     response = client.get(url)
     assert response.status_code == 200
 
 @pytest.mark.django_db
-def test_delete_event_post(client, user, event):
-    url = reverse('delete_event', args=(event.id,))
+def test_delete_task_post(client, user, task):
+    url = reverse('delete_task', args=(task.id,))
     data = {
-        'pk':event.id
+        'pk':task.id
     }
     response = client.post(url, data)
     assert response.status_code == 302
+
+
+
+@pytest.mark.django_db
+def test_delete_journal_get_not_logged_in(client, journal):
+    url = reverse('delete_journal_entry', args=(journal.id,))
+    response = client.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_delete_journal_get_login(client, user, journal):
+    url = reverse('delete_journal_entry', args=(journal.id,))
+    client.force_login(user)
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_journal_task_post(client, user, journal):
+    url = reverse('delete_journal_entry', args=(journal.id,))
+    data = {
+        'pk':journal.id
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+
+@pytest.mark.django_db
+def test_delete_tag_get_not_logged_in(client, tag):
+    url = reverse('delete_tag', args=(tag.id,))
+    response = client.get(url)
+    assert response.status_code == 302
+    assert response.url.startswith(reverse('login'))
+
+
+@pytest.mark.django_db
+def test_delete_tag_get_login(client, user, tag):
+    url = reverse('delete_tag', args=(tag.id,))
+    client.force_login(user)
+    response = client.get(url)
+    assert response.status_code == 200
+
+@pytest.mark.django_db
+def test_journal_tag_post(client, user, tag):
+    url = reverse('delete_tag', args=(tag.id,))
+    data = {
+        'pk':tag.id
+    }
+    response = client.post(url, data)
+    assert response.status_code == 302
+
+
+
+
