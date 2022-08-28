@@ -28,7 +28,6 @@ def test_redirect_login(client, user):
     assert response.url == reverse('daily_planner', args=(today.year, today.month, today.day, ))
     assert today.day == 14
 
-#!!!!!!!!!!!!!!!!!!!!!!!!! manage !!!!!!!!!!!!!!!!!!
 @pytest.mark.django_db
 def test_manage_tasks_get_not_logged_in(client):
     url = reverse('manage_tasks')
@@ -118,6 +117,8 @@ def test_daily_planner_get_login(client, user):
     response = client.get(url)
     assert response.status_code == 200
     assert today.month == 1
+
+
 
 #OK!!!!!!!!!!!!!!!!!!!!!!!!!      UPDATE      !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
