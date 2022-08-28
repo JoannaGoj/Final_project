@@ -13,6 +13,7 @@
     </h5>
     <ul class="list-group">
         {% for entry in user_journal_entries %}
+
             <div class="card">
                 <h5 class="card-header" style="background-color: #CF9FFF">Journal entry from {{ entry.date_of_entry }}</h5>
                 <div class="card-body" style="background-color: #E6E6FA">
@@ -29,6 +30,7 @@
                     {% endif %}
                 </div>
             </div>
+
         {% endfor %}
     </ul>
 

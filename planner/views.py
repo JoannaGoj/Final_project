@@ -11,6 +11,10 @@ from datetime import datetime
 
 # Create your views here.
 
+class RedirectToDailyPlanner(View):
+    def get(self, request):
+        today = datetime.now()
+        return redirect(reverse('daily_planner', kwargs={'year': today.year, 'month': today.month, 'day': today.day}))
 
 
 class ManageTasksView(LoginRequiredMixin, View):
@@ -79,8 +83,6 @@ class ManageEventsView(LoginRequiredMixin, View):
         return render(request, 'manage_events.html', {'form': form, 'events': events})
 
 
-
-
 class UpdateEventView(LoginRequiredMixin, UpdateView):
     model = Event
     form_class = EventForm
@@ -145,7 +147,7 @@ class DeleteJournalEntryView(LoginRequiredMixin, View):
         user = request.user
         user_journal_entries = Journal.objects.filter(user_id=user.id)
         return render(request, 'show_all_journal_entries.html',
-                      {'user_journal_entries': user_journal_entries,'form': form, 'entry_pk': pk, 'message': "delete"})
+                      {'user_journal_entries': user_journal_entries, 'form': form, 'entry_pk': pk, 'message': "delete"})
 
     def post(self, request, pk):
         entry_to_delete = Journal.objects.get(id=pk)
@@ -214,13 +216,35 @@ class UserDailyPlanner(LoginRequiredMixin, View):
                                       end_time__month__gte=month, end_time__year__gte=year, user_id=user.id)
         journal = Journal.objects.filter(date_of_entry__day=day, date_of_entry__month=month,
                                          date_of_entry__year=year, user_id=user.id)
-        all_items_on_the_page = list(chain(events, journal))  # dodac taski
+        tasks = Task.objects.filter(date__year=year, date__month=month, date__day=day, user_id=user.id)
+        all_items_on_the_page = list(chain(events, journal, tasks))
         journal_form = JournalInputEntryForm
         today = datetime.now()
-        formatted_time = today.time().strftime('%H:%M')
         context = {"items": all_items_on_the_page,
                    "journal_form": journal_form,
-                   "todays_date": today.date(),
-                   'current_time': formatted_time,
+                   "todays_date": today
                    }
+        return render(request, 'user_page.html', context)
+
+    def post(self, request, day, month, year):
+        form = JournalInputEntryForm(request.POST)
+        user = request.user
+        events = Event.objects.filter(start_time__day__lte=day, start_time__month__lte=month,
+                                      start_time__year__lte=year, end_time__day__gte=day,
+                                      end_time__month__gte=month, end_time__year__gte=year, user_id=user.id)
+        journal = Journal.objects.filter(date_of_entry__day=day, date_of_entry__month=month,
+                                         date_of_entry__year=year, user_id=user.id)
+        tasks = Task.objects.filter(date__year=year, date__month=month, date__day=day, user_id=user.id)
+        all_items_on_the_page = list(chain(events, journal, tasks))
+        journal_form = JournalInputEntryForm
+        today = datetime.now()
+        context = {"items": all_items_on_the_page,
+                   "journal_form": journal_form,
+                   "todays_date": today
+                   }
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.user = request.user
+            entry.save()
+            return redirect(reverse('daily_planner', kwargs={'year':year, 'month':month, 'day':day}))
         return render(request, 'user_page.html', context)

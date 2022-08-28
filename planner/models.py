@@ -20,8 +20,6 @@ class Schedule(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     description = models.TextField(max_length=250, blank=True, null=True)
-    cancelled = models.BooleanField(default=False)
-    updated_at = models.DateTimeField('%d.%m.%Y', null=True)
     tags = models.ManyToManyField('Tags', blank=True)
 
     class Meta:
@@ -65,9 +63,9 @@ class Event(Schedule):
 
 
 class Task(Schedule):
-    date = models.DateField('Date', default=now)
+    date = models.DateField('Date', default=now, blank=True)
     urgent = models.IntegerField(choices=URGENT, default=2)
-    completed = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False, blank=True)
 
     def class_id(self):
         return 'task'

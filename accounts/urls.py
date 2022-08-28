@@ -15,10 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from planner import views as planner_views
 from accounts import views
 
 urlpatterns = [
+    path('', planner_views.RedirectToDailyPlanner.as_view(), name='redirect_to_daily_planner'),
     path('login/', views.Login.as_view(), name='login'),
     path('register/', views.RegisterView.as_view(), name='register'),
     path('logout/', views.LogoutView.as_view(), name='logout')
