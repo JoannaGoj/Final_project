@@ -29,9 +29,9 @@ class TaskForm(forms.ModelForm):
                    'date': DateInput(attrs={
                        'placeholder': 'Select a date',
                        'type': 'date'}),
-                        'tags': forms.CheckboxSelectMultiple(),
-                        'description': forms.TextInput,
-                        'completed': forms.CheckboxInput
+                   'tags': forms.CheckboxSelectMultiple(),
+                   'description': forms.TextInput,
+                   'completed': forms.CheckboxInput
                    }
 
 
