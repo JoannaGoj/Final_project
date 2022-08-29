@@ -53,7 +53,8 @@ class UpdateTaskView(LoginRequiredMixin, UpdateView):
 class DeleteTaskView(LoginRequiredMixin, View):
     def get(self, request, pk):
         form = TaskForm
-        tasks = Task.objects.all().order_by('-date')
+        user = self.request.user
+        tasks = Task.objects.filter(user_id=user.id).order_by('-date')
         return render(request, 'manage_tasks.html',
                       {'tasks': tasks, 'confirm_delete': "delete", 'task_pk': pk, 'form': form})
 
@@ -63,7 +64,7 @@ class DeleteTaskView(LoginRequiredMixin, View):
         return redirect('manage_tasks')
 
 
-# czemu end_time jest w formularzu przed start time?
+
 class ManageEventsView(LoginRequiredMixin, View):
     def get(self, request):
         form = EventForm
@@ -100,7 +101,8 @@ class UpdateEventView(LoginRequiredMixin, UpdateView):
 class DeleteEventView(LoginRequiredMixin, View):
     def get(self, request, pk):
         form = EventForm
-        events = Event.objects.all().order_by('-start_time')
+        user = self.request.user
+        events = Event.objects.filter(user_id=user.id).order_by('-start_time')
         return render(request, 'manage_events.html',
                       {'events': events, 'confirm_delete': "delete", 'event_pk': pk, 'form': form})
 
@@ -183,7 +185,6 @@ class UpdateTag(LoginRequiredMixin, UpdateView):
         return data
 
 
-# czemu pierwszy przycisk delete zjezdza na doł? Trzeba to poprawic
 class DeleteTagView(LoginRequiredMixin, View):
     def get(self, request, pk):
         form = TagsForm
@@ -196,18 +197,8 @@ class DeleteTagView(LoginRequiredMixin, View):
         return redirect('manage_tags')
 
 
-class ShowAllTasks(LoginRequiredMixin, ListView):
-    model = Task
-    template_name = 'show_all_tasks.html'
-    fields = '__all__'
-
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-        data.update({'model': 'tasks'})
-        return data
 
 
-# need to prevent page refresh after posting journal notes
 class UserDailyPlanner(LoginRequiredMixin, View):
     def get(self, request, year, month, day):
         user = request.user
@@ -218,33 +209,8 @@ class UserDailyPlanner(LoginRequiredMixin, View):
                                          date_of_entry__year=year, user_id=user.id)
         tasks = Task.objects.filter(date__year=year, date__month=month, date__day=day, user_id=user.id)
         all_items_on_the_page = list(chain(events, journal, tasks))
-        journal_form = JournalInputEntryForm
         today = datetime.now()
         context = {"items": all_items_on_the_page,
-                   "journal_form": journal_form,
                    "todays_date": today
                    }
-        return render(request, 'user_page.html', context)
-
-    def post(self, request, day, month, year):
-        form = JournalInputEntryForm(request.POST)
-        user = request.user
-        events = Event.objects.filter(start_time__day__lte=day, start_time__month__lte=month,
-                                      start_time__year__lte=year, end_time__day__gte=day,
-                                      end_time__month__gte=month, end_time__year__gte=year, user_id=user.id)
-        journal = Journal.objects.filter(date_of_entry__day=day, date_of_entry__month=month,
-                                         date_of_entry__year=year, user_id=user.id)
-        tasks = Task.objects.filter(date__year=year, date__month=month, date__day=day, user_id=user.id)
-        all_items_on_the_page = list(chain(events, journal, tasks))
-        journal_form = JournalInputEntryForm
-        today = datetime.now()
-        context = {"items": all_items_on_the_page,
-                   "journal_form": journal_form,
-                   "todays_date": today
-                   }
-        if form.is_valid():
-            entry = form.save(commit=False)
-            entry.user = request.user
-            entry.save()
-            return redirect(reverse('daily_planner', kwargs={'year':year, 'month':month, 'day':day}))
         return render(request, 'user_page.html', context)

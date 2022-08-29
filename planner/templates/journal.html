@@ -1,7 +1,22 @@
-{% load crispy_forms_filters %}
-<form method='post'>{% csrf_token %}
-    {{ journal_form.media }}
-    {{ journal_form|crispy }}
-    <br>
-    <input type="submit" style="background-color: lightpink" value="Submit">
-</form>
+            <div class="card">
+                <h5 class="card-header" style="background-color: #CF9FFF">Journal entry from {{ item.date_of_entry }}
+                    {% for tag in item.tags.all %}
+                        <span class="badge rounded-pill" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
+                    {% endfor %}
+                </h5>
+
+                <div class="card-body" style="background-color: #E6E6FA">
+
+                    <h5 class="card-title"> {{ item.name }} </h5>
+                    <p class="card-text"> {{ item.text|safe }} </p>
+                    <a href="{% url 'update_journal_entry' item.pk %}" class="btn btn-primary">Edit entry</a>
+                    <a href="{% url 'delete_journal_entry' item.pk %}" class="btn btn-danger">Delete entry</a>
+                    {% if message == 'delete' %}
+                        <form method="post"> {% csrf_token %}
+                            {% if entry.pk == entry_pk %}
+                                <input type="submit" value="Confirm delete" class="btn btn-danger">
+                                </form>
+                            {% endif %}
+                    {% endif %}
+                </div>
+            </div>

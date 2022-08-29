@@ -29,23 +29,21 @@ class TaskForm(forms.ModelForm):
                    'date': DateInput(attrs={
                        'placeholder': 'Select a date',
                        'type': 'date'}),
-                        'tags': forms.CheckboxSelectMultiple(),
-                        'description': forms.TextInput,
-                        'completed': forms.CheckboxInput
+                   'tags': forms.CheckboxSelectMultiple(),
+                   'description': forms.TextInput,
+                   'completed': forms.CheckboxInput
                    }
 
 
 class EventForm(forms.ModelForm):
     class Meta:
-        tags = Tags.objects.order_by('id')
         model = Event
         fields = ['name', 'description', 'tags', 'start_time', 'end_time']
-        for tag in tags:
-            widgets = {'start_time': DateTimeInput(attrs={'type': 'datetime-local'}),
-                       'end_time': DateTimeInput(attrs={'type': 'datetime-local'}),
-                       'tags': forms.CheckboxSelectMultiple(),
-                       'description': forms.TextInput
-                       }
+        widgets = {'start_time': DateTimeInput(attrs={'type': 'datetime-local'}),
+                   'end_time': DateTimeInput(attrs={'type': 'datetime-local'}),
+                   'tags': forms.CheckboxSelectMultiple(),
+                   'description': forms.TextInput
+                   }
 
     def clean(self):
         data = super().clean()
