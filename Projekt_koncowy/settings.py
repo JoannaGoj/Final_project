@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from Projekt_koncowy.local_settings import DATABASES
+from django.urls import reverse_lazy
+from planner import context_processors
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'planner',
-    'crispy_forms'
+    'crispy_forms',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -61,6 +64,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'planner.context_processors.date_time_today',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -100,7 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 
@@ -123,3 +127,15 @@ MEDIA_URL = '/pictures/'
 MEDIA_ROOT = BASE_DIR
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_URL = reverse_lazy('login')
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'height': 'full',
+        'width': 'full',
+    },
+}
+
+
+

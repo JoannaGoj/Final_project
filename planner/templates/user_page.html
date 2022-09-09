@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_filters %}
 {% block content %}
-
+    <h3>Today's planner</h3>
+    <p> {{ todays_date }}</p>
+    {% for item in items %}
+        {% if item.class_id == 'task' %}
+            {% include 'task_card.html' %}
+        {% endif %}
+        {% if item.class_id == 'event' %}
+            {% include 'event_card.html' %}
+        {% endif %}
+        {% if item.class_id == 'journal' %}
+            {% include 'journal.html' %}
+        {% endif %}
+        <br>
+    {% endfor %}
 {% endblock %}

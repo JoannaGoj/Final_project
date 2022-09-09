@@ -1,20 +1,19 @@
 {% load static %}
 {% include 'header.html' %}
-<body style="background-color: #C4A9D9">
+<body style="background-image: url({% static 'pictures/background.jpg' %}); background-attachment: fixed;background-repeat: no-repeat; background-size: 1498px 999px; background-color: #BF79DB">
 {% include 'top_navbar.html' %}
+<br>
 <div class="container">
     <div class="row">
         <div class="col">
-            <img src={% static 'pictures/left_sidebar.png' %} width="306" height="812">
         </div>
-        <div class="col-6">
+        <div class="col-6 " style="background-color: rgba(255,255, 255,0.5)">
             <div class="m-3">
                 {% block content %}
                 {% endblock %}
             </div>
         </div>
         <div class="col">
-            <img src={% static 'pictures/left_sidebar.png' %} width="306" height="812">
         </div>
     </div>
 </div>

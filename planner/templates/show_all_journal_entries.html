@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load crispy_forms_filters %}
+
+    <form method='post'>{% csrf_token %}
+        {{ form.media }}
+        {{ form|crispy }}
+        <br>
+        <input type="submit" style="background-color: lightpink" value="Submit">
+    </form>
+    <h5 class="text-center">
+        Your journal entries:
+    </h5>
+    <ul class="list-group">
+        {% for entry in user_journal_entries %}
+
+            <div class="card">
+                <h5 class="card-header" style="background-color: #CF9FFF">Journal entry from {{ entry.date_of_entry }}
+                    {% for tag in journal.tags.all %}
+                        <span class="badge rounded-pill" style="background-color: {{ tag.color }}">{{ tag.name }}</span>
+                    {% endfor %}
+                </h5>
+
+                <div class="card-body" style="background-color: #E6E6FA">
+
+                    <h5 class="card-title"> {{ entry.name }} </h5>
+                    <p class="card-text"> {{ entry.text|safe }} </p>
+                    <a href="{% url 'update_journal_entry' entry.pk %}" class="btn btn-primary">Edit entry</a>
+                    <a href="{% url 'delete_journal_entry' entry.pk %}" class="btn btn-danger">Delete entry</a>
+                    {% if message == 'delete' %}
+                        <form method="post"> {% csrf_token %}
+                            {% if entry.pk == entry_pk %}
+                                <input type="submit" value="Confirm delete" class="btn btn-danger">
+                                </form>
+                            {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+        {% endfor %}
+    </ul>
+
+{% endblock %}
